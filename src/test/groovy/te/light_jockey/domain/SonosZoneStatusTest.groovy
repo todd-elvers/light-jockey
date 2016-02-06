@@ -3,8 +3,9 @@ package te.light_jockey.domain
 import groovy.json.JsonSlurper
 import spock.lang.Shared
 import spock.lang.Specification
+import te.light_jockey.domain.sonos.SonosZoneStatus
 
-class SonosZoneStateTest extends Specification {
+class SonosZoneStatusTest extends Specification {
 
     @Shared
     String jsonResponseString = """\
@@ -42,7 +43,7 @@ class SonosZoneStateTest extends Specification {
 
     def "can parse a /<zone>/state JSON response from Sonos player"() {
         when:
-            def sonosZoneState = new SonosZoneState(new JsonSlurper().parseText(jsonResponseString))
+            def sonosZoneState = new SonosZoneStatus(new JsonSlurper().parseText(jsonResponseString))
 
         then:
             sonosZoneState.currentSong.artist == "College"

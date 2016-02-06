@@ -1,12 +1,12 @@
-package te.light_jockey.domain
+package te.light_jockey.domain.sonos
 
 class SonosSong {
-    String artist
-    String title
-    String album
-    String albumArtURI
-    String uri
-    int durationInSeconds
+    final String artist
+    final String title
+    final String album
+    final String albumArtURI
+    final String uri
+    final int durationInSeconds
 
     SonosSong(json) {
         artist = json.artist

@@ -1,6 +1,8 @@
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder
 import ch.qos.logback.core.ConsoleAppender
+import ch.qos.logback.core.encoder.LayoutWrappingEncoder
 import ch.qos.logback.core.status.OnConsoleStatusListener
+import te.light_jockey.logging.NewlineOrCarriageReturnLayout
 
 import static ch.qos.logback.classic.Level.*
 
@@ -10,8 +12,9 @@ String filename = 'light-jockey'
 String logDir = "./data/logs"
 
 appender("CONSOLE", ConsoleAppender) {
-    encoder(PatternLayoutEncoder) {
-        pattern = "%d{MM-dd-yyyy HH:mm:ss} [%-5level] %logger{36}:%L - %msg%n"
+    encoder(LayoutWrappingEncoder) {
+        layout(NewlineOrCarriageReturnLayout)
+//        pattern = "%d{MM-dd-yyyy HH:mm:ss} [%-5level] %logger{36}:%L - %msg%n"
     }
 }
 
@@ -26,12 +29,5 @@ appender("CONSOLE", ConsoleAppender) {
 //    }
 //}
 
-logger("com.carfax.rabbit.producer", ERROR)
-logger("org.springframework.core", ERROR)
-logger("org.springframework.beans", ERROR)
-logger("org.springframework.context", ERROR)
-logger("org.springframework.web", ERROR)
-logger("org.apache.xerces.parsers", ERROR)
-logger("org.mortbay.log", ERROR)
-
-root(ERROR, ["FILE", "CONSOLE"])
+//root(ERROR, ["FILE", "CONSOLE"])
+root(INFO, ["CONSOLE"])

@@ -1,9 +1,9 @@
-package te.light_jockey.domain
+package te.light_jockey.domain.sonos
 
 class SonosZonePlayMode {
-    boolean isShuffleOn
-    boolean isRepeatOn
-    boolean isCrossfadeOn
+    final boolean isShuffleOn
+    final boolean isRepeatOn
+    final boolean isCrossfadeOn
 
     SonosZonePlayMode(json) {
         isShuffleOn = json.shuffle
