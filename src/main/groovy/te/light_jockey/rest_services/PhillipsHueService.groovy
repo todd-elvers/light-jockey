@@ -64,7 +64,7 @@ class PhillipsHueService {
         return new Random().nextInt(realUpperBound - lowerBound) + lowerBound;
     }
 
-    LightTransitionProperties updateLightTransitionProps(EchoNestSearch search) {
+    LightTransitionProperties createLightTransitionProps(EchoNestSearch search) {
         Integer danceability = DANCEABILITY_DEFAULT
         Integer energy = ENERGY_DEFAULT
         Integer tempo = TEMPO_DEFAULT

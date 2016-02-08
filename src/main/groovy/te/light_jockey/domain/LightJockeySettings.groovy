@@ -5,8 +5,8 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class LightJockeySettings {
     String zoneName
-    List<String> lightIds
     String sonosApiUrl
     String hueApiUrl
     String echoNestApiKey
+    List<String> lightIds
 }

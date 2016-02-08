@@ -13,6 +13,8 @@ class LightTransitionProperties {
     int maxBrightness = 100
     int saturation = 100
 
+    LightTransitionProperties(){}
+
     LightTransitionProperties(Integer danceability, Integer energy, Integer tempo) {
         // Higher tempo = faster transitions that are more frequent
         switch (tempo) {
