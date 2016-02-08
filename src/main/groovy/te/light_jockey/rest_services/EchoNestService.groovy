@@ -1,4 +1,4 @@
-package te.light_jockey
+package te.light_jockey.rest_services
 
 import groovy.util.logging.Slf4j
 import te.light_jockey.domain.echo_nest.EchoNestSearch
@@ -7,11 +7,11 @@ import wslite.rest.RESTClient
 import wslite.rest.Response
 
 @Slf4j
-class EchoNestMetadataService {
+class EchoNestService {
     final RESTClient echoNestApiEndpoint = new RESTClient('http://developer.echonest.com/')
     final String echoNestApiKey
 
-    EchoNestMetadataService(String echoNestApiKey) {
+    EchoNestService(String echoNestApiKey) {
         this.echoNestApiKey = echoNestApiKey
     }
 

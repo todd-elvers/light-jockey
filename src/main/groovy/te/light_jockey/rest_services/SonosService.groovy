@@ -1,4 +1,4 @@
-package te.light_jockey
+package te.light_jockey.rest_services
 
 import te.light_jockey.domain.sonos.SonosZoneStatus
 import wslite.rest.RESTClient
@@ -6,7 +6,7 @@ import wslite.rest.Response
 
 
 class SonosService {
-    RESTClient sonosApiEndpoint
+    final RESTClient sonosApiEndpoint
 
     SonosService(String sonosApiUrl) {
         sonosApiEndpoint = new RESTClient(sonosApiUrl)

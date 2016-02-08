@@ -28,5 +28,9 @@ class SonosZoneStatus {
     boolean isPausedOrStopped() {
         return zoneState in ['PAUSED_PLAYBACK', 'STOPPED']
     }
+
+    boolean isCurrentlyPlaying(String songTitle) {
+        return songTitle.equalsIgnoreCase(currentSong.title)
+    }
 }
 
