@@ -1,4 +1,4 @@
-package te.light_jockey.logging;
+package te.light_jockey.misc;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.CoreConstants;

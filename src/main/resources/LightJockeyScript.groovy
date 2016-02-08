@@ -1,4 +1,4 @@
-
+/*** This is after I just converted the python script to a Groovy script & was left around for reference ***/
 
 //@GrabResolver(name = 'groovy-wslite', root = 'https://oss.sonatype.org/content/groups/public', m2Compatible = true)
 //@Grab(group = 'com.github.groovy-wslite', module = 'groovy-wslite', version = '2.0.0-SNAPSHOT', changing = true)

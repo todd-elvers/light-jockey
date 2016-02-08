@@ -3,7 +3,7 @@ package te.light_jockey.rest_services
 import groovy.util.logging.Slf4j
 import te.light_jockey.domain.echo_nest.EchoNestSearch
 import te.light_jockey.domain.echo_nest.EchoNestSong
-import te.light_jockey.domain.hue.LightTransitionProperties
+import te.light_jockey.domain.hue.LightTransition
 import wslite.rest.ContentType
 import wslite.rest.RESTClient
 
@@ -12,7 +12,7 @@ import java.math.RoundingMode
 
 @Slf4j
 class PhillipsHueService {
-    public static final Map FADE_TO_WHITE_JSON_PAYLOAD = [on: true, sat: 50, bri: 200, hue: 10_000, transitionTime: 50]
+    public static final Map TO_BRIGHT_WHITE = [on: true, sat: 50, bri: 200, hue: 10_000, transitionTime: 50]
     public static final MathContext TO_WHOLE_NUMBER = new MathContext(1, RoundingMode.HALF_UP)
     public static final int DANCEABILITY_DEFAULT = 50
     public static final int ENERGY_DEFAULT = 50
@@ -32,21 +32,17 @@ class PhillipsHueService {
         }
     }
 
-    void triggerLightTransition(String lightId, LightTransitionProperties transitionProps) {
-        triggerLightTransition(lightId, buildJsonPayload(transitionProps))
-    }
-
-    private Map buildJsonPayload(LightTransitionProperties props) {
+    Map buildTransitionPayload(LightTransition transition) {
         int randomIntBetween1and10 = randomIntBetween(1, 10)
-        int thresholdValueForTurningOff = (props.percentChanceToTurnOff * 10).round()
+        int thresholdValueForTurningOff = (transition.percentChanceToTurnOff * 10).round()
         boolean shouldRandomlyTurnOff = (randomIntBetween1and10 >= thresholdValueForTurningOff)
 
         Map payload = shouldRandomlyTurnOff ? [on: false] : [
                 on            : true,
                 hue           : randomIntBetween(0, 65000),
-                bri           : randomIntBetween(props.minBrightness, props.maxBrightness),
-                sat           : props.saturation,
-                transitionTime: props.transitionDuration
+                bri           : randomIntBetween(transition.minBrightness, transition.maxBrightness),
+                sat           : transition.saturation,
+                transitionTime: transition.transitionDuration
         ]
 
         log.debug("Transition payload:")
@@ -64,7 +60,7 @@ class PhillipsHueService {
         return new Random().nextInt(realUpperBound - lowerBound) + lowerBound;
     }
 
-    LightTransitionProperties createLightTransitionProps(EchoNestSearch search) {
+    LightTransition buildLightTransition(EchoNestSearch search) {
         Integer danceability = DANCEABILITY_DEFAULT
         Integer energy = ENERGY_DEFAULT
         Integer tempo = TEMPO_DEFAULT
@@ -78,6 +74,6 @@ class PhillipsHueService {
 
         log.info "Danceability = ${danceability}% | Energy = ${energy}% | Tempo = ${tempo}bpm"
 
-        return new LightTransitionProperties(danceability, energy, tempo)
+        return new LightTransition(danceability, energy, tempo)
     }
 }

@@ -1,6 +1,9 @@
 apply plugin: 'java'
 apply plugin: 'groovy'
 apply plugin: 'idea'
+apply plugin: 'application'
+
+mainClassName = 'te.light_jockey.Startup'
 
 repositories {
     mavenCentral()
@@ -19,8 +22,7 @@ dependencies {
 
     // Misc.
     compile 'com.google.guava:guava:18.0'
-//    compile 'org.apache.commons:commons-lang3:3.4'
-//    compile 'commons-io:commons-io:2.4'
+    compile 'commons-io:commons-io:2.4'
 
     // Spock
     testCompile 'cglib:cglib-nodep:3.2.0'
@@ -33,5 +35,18 @@ idea {
     module {
         downloadJavadoc = true
         downloadSources = true
+    }
+}
+
+task executableJar(type: Jar, dependsOn:[':compileGroovy', ':processResources']) {
+    description 'Copies all classes, resources, and jar dependencies into one executable jar'
+    from('gradle.properties')
+    from files(sourceSets.main.output.classesDir)
+    from files(sourceSets.main.output.resourcesDir)
+    from configurations.runtime.asFileTree.files.collect { zipTree(it) }
+    archiveName "LightJockey-v${version}.jar"
+
+    manifest {
+        attributes 'Main-Class': mainClassName
     }
 }

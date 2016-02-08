@@ -15,7 +15,7 @@ class Startup {
     )
 
     public static void main(String... args) {
-        new LightJockeyEngine(settings).start()
+        new LightJockey(settings).start()
     }
 
 }

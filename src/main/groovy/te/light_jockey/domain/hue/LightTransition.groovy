@@ -5,7 +5,7 @@ import groovy.util.logging.Slf4j
 
 @Slf4j
 @ToString(includeNames = true)
-class LightTransitionProperties {
+class LightTransition {
     Double percentChanceToTurnOff
     int secondsBetweenTransitions = 10
     int transitionDuration = 10
@@ -13,9 +13,9 @@ class LightTransitionProperties {
     int maxBrightness = 100
     int saturation = 100
 
-    LightTransitionProperties(){}
+    LightTransition(){}
 
-    LightTransitionProperties(Integer danceability, Integer energy, Integer tempo) {
+    LightTransition(Integer danceability, Integer energy, Integer tempo) {
         // Higher tempo = faster transitions that are more frequent
         switch (tempo) {
             case (0..100):
