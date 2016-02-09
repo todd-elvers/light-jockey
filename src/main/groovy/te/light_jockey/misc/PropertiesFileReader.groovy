@@ -9,7 +9,7 @@ class PropertiesFileReader {
         try {
             return loadPropertiesFromInputStream(resolveAppPropFileInputStream())[propName]
         } catch (ignored) {
-            throw new RuntimeException("Unable to read '${propName}' from g2exe's properties file.")
+            throw new RuntimeException("Unable to read '${propName}' from LightJockey's properties file.")
         }
     }
 
@@ -19,14 +19,6 @@ class PropertiesFileReader {
             propFileInputStream = FileUtils.openInputStream(PROPERTIES_FILE_NAME as File)
         }
         return propFileInputStream
-    }
-
-    static String readPropertyFromFile(String propName, File propFile) {
-        try {
-            return loadPropertiesFromInputStream(FileUtils.openInputStream(propFile))[propName]
-        } catch (ignored) {
-            throw new RuntimeException("Unable to read from properties file.")
-        }
     }
 
     private static Properties loadPropertiesFromInputStream(InputStream inputStream) {
