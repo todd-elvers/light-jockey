@@ -17,7 +17,7 @@ public class NewlineOrCarriageReturnLayout extends LayoutBase<ILoggingEvent> {
      * with an ellipsis, then the log message is returned with a newline character appended to it.
      *
      * <p><b>2nd Case:</b> If a log message starts with a carriage return or ends with an ellipsis,
-     * then the log message is returned from this message unmodified.
+     * then the log message is returned from this method unmodified.
      *
      * @param event the logging event
      * @return the message that will be passed to the logger
