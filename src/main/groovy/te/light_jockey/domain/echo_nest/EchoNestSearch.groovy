@@ -1,6 +1,5 @@
 package te.light_jockey.domain.echo_nest
 
-//TODO: Either keep with the 'SongMetadata' strategy or switch to an explicit 'EchoNest' naming scheme
 class EchoNestSearch {
 
     final int echoNestResponseCode

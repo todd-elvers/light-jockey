@@ -24,8 +24,8 @@ class EchoNestService {
                         format : 'json',
                         artist : song.artist,
                         title  : song.title,
-                        bucket : 'audio_summary',
-                        results: 3
+                        bucket : 'audio_summary',   // Add the 'audio_summary' object to the response
+                        results: 3                  // Limit the results to 3 songs
                 ]
         )
 

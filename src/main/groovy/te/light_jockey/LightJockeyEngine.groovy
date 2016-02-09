@@ -35,6 +35,7 @@ class LightJockeyEngine extends TimerTask {
 
     @Override
     void run() {
+        log.info("\rChecking Sonos player status...")
         SonosZoneStatus zoneStatus = sonosService.getZoneStatus(settings.zoneName)
 
         if (zoneStatus.isPausedOrStopped()) {
