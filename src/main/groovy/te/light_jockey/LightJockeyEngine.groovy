@@ -46,7 +46,7 @@ class LightJockeyEngine extends TimerTask {
 
         if (zoneStatus.isCurrentlyPlaying(currentSongTitle)) {
             log.info("\r${lightTransition.secondsBetweenTransitions - timer.elapsed(SECONDS)} seconds until next transition...")
-        } else {
+        } else if(!zoneStatus.isCurrentlyPlaying(currentSongTitle)) {
             log.info("New song detected: $zoneStatus.currentSong.title by $zoneStatus.currentSong.artist")
             currentSongTitle = zoneStatus.currentSong.title
 
@@ -55,9 +55,7 @@ class LightJockeyEngine extends TimerTask {
 
             transitionAllLights()
             resetTimer()
-        }
-
-        if (timer.elapsed(SECONDS) >= lightTransition.secondsBetweenTransitions) {
+        } else if (timer.elapsed(SECONDS) >= lightTransition.secondsBetweenTransitions) {
             transitionAllLights()
             resetTimer()
         }
