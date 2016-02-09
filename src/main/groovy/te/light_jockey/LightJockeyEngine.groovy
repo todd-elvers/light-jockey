@@ -52,14 +52,15 @@ class LightJockeyEngine extends TimerTask {
 
             EchoNestSearch search = echoNestService.search(zoneStatus.currentSong)
             lightTransition = hueService.buildLightTransition(search)
-
             Map transitionPayload = hueService.buildTransitionPayload(lightTransition)
             transitionAllLights(transitionPayload)
+            resetTimer()
         }
 
         if (timer.elapsed(SECONDS) >= lightTransition.secondsBetweenTransitions) {
             Map transitionPayload = hueService.buildTransitionPayload(lightTransition)
             transitionAllLights(transitionPayload)
+            resetTimer()
         }
     }
 
@@ -78,6 +79,9 @@ class LightJockeyEngine extends TimerTask {
         settings.lightIds.each { lightId ->
             hueService.triggerLightTransition(lightId, transitionPayload)
         }
+    }
+
+    private void resetTimer() {
         timer.reset().start()
     }
 }
