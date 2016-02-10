@@ -3,22 +3,30 @@ package te.light_jockey.misc
 import org.apache.commons.io.FileUtils
 
 class PropertiesFileReader {
-    static final PROPERTIES_FILE_NAME = "gradle.properties"
+    static final APP_PROP_FILENAME = "gradle.properties"
 
     static String readAppProperty(String propName) {
         try {
-            return loadPropertiesFromInputStream(resolveAppPropFileInputStream())[propName]
+            return loadPropertiesFromInputStream(resolveInputStream(APP_PROP_FILENAME))[propName]
         } catch (ignored) {
             throw new RuntimeException("Unable to read '${propName}' from LightJockey's properties file.")
         }
     }
 
-    private static InputStream resolveAppPropFileInputStream() {
-        def propFileInputStream = Thread.currentThread().contextClassLoader.getResourceAsStream(PROPERTIES_FILE_NAME)
+    private static InputStream resolveInputStream(String filename) {
+        def propFileInputStream = Thread.currentThread().contextClassLoader.getResourceAsStream(filename)
         if (!propFileInputStream) {
-            propFileInputStream = FileUtils.openInputStream(PROPERTIES_FILE_NAME as File)
+            propFileInputStream = FileUtils.openInputStream(filename as File)
         }
         return propFileInputStream
+    }
+
+    static Properties readFile(String propFilename) {
+        try {
+            return loadPropertiesFromInputStream(resolveInputStream(propFilename))
+        } catch (ignored) {
+            throw new RuntimeException("Unable to read from properties file.")
+        }
     }
 
     private static Properties loadPropertiesFromInputStream(InputStream inputStream) {
