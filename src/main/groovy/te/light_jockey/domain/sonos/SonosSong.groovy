@@ -6,7 +6,7 @@ class SonosSong {
     final String album
     final String albumArtURI
     final String uri
-    final int durationInSeconds
+    final Integer durationInSeconds
 
     SonosSong(json) {
         artist = json.artist

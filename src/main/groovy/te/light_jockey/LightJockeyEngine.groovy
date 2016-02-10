@@ -46,16 +46,17 @@ class LightJockeyEngine extends TimerTask {
 
         if (zoneStatus.isCurrentlyPlaying(currentSongTitle)) {
             log.info("\r${lightTransition.secondsBetweenTransitions - timer.elapsed(SECONDS)} seconds until next transition...")
+            if (timer.elapsed(SECONDS) >= lightTransition.secondsBetweenTransitions) {
+                transitionAllLights()
+                resetTimer()
+            }
         } else if(!zoneStatus.isCurrentlyPlaying(currentSongTitle)) {
-            log.info("New song detected: $zoneStatus.currentSong.title by $zoneStatus.currentSong.artist")
+            log.info("New song detected: '$zoneStatus.currentSong.title' by $zoneStatus.currentSong.artist")
             currentSongTitle = zoneStatus.currentSong.title
 
             EchoNestSearch search = echoNestService.search(zoneStatus.currentSong)
             lightTransition = hueService.buildLightTransition(search)
 
-            transitionAllLights()
-            resetTimer()
-        } else if (timer.elapsed(SECONDS) >= lightTransition.secondsBetweenTransitions) {
             transitionAllLights()
             resetTimer()
         }
@@ -73,9 +74,9 @@ class LightJockeyEngine extends TimerTask {
     // TODO: In the future, maybe randomly use the same payload for all lights so they sync temporarily.  Might look cool.
     private void transitionAllLights() {
         Map transitionPayload = hueService.buildTransitionPayload(lightTransition)
-        log.info "Transitioning lights now."
+        log.info "\rTransitioning lights now."
         settings.lightIds.each { lightId ->
-            hueService.triggerLightTransition(lightId, transitionPayload)
+            hueService.triggerLightTransition(lightId, hueService.buildTransitionPayload(lightTransition) )
         }
     }
 
