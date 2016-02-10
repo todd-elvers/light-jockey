@@ -56,3 +56,8 @@ out
 classes
 data/logs/
 /~/
+
+
+#   LightJockeySettings   #
+###########################
+/src/main/resources/light-jockey-settings.properties
