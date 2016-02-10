@@ -83,7 +83,7 @@ class LightTransition {
                 minBrightness = 150
                 percentChanceToTurnOff = 3
                 break
-            default:    // 100% or greater
+            default:    // >= 100
                 maxBrightness = 255
                 minBrightness = 200
                 percentChanceToTurnOff = 5
