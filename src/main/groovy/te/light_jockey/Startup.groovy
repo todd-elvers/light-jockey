@@ -1,20 +1,23 @@
 package te.light_jockey
 
-import groovy.transform.CompileStatic
 import te.light_jockey.domain.LightJockeySettings
+import te.light_jockey.misc.PropertiesFileReader
 
-@CompileStatic
 class Startup {
 
-    public static final LightJockeySettings settings = new LightJockeySettings(
-            zoneName      : 'Living Room',
-            echoNestApiKey: 'KRWFREWEPJ7APEI1T',
-            sonosApiUrl   : 'http://localhost:5005/',
-            hueApiUrl     : 'http://192.168.1.112/api/210b0eea1366f719644ef2e2307c1923',
-            lightIds      : ['1','2','3']
-    )
-
     public static void main(String... args) {
+        //TODO: Add validation to this process eventually
+        Properties propFile = PropertiesFileReader.readFile('light-jockey-settings.properties')
+
+        LightJockeySettings settings = new LightJockeySettings(
+                zoneName      : propFile.zoneName,
+                echoNestApiKey: propFile.echoNestApiKey,
+                sonosApiUrl   : propFile.sonosApiUrl,
+                hueApiUrl     : propFile.hueApiUrl,
+                lightIds      : propFile.lightIds.toString().split(',')*.trim()
+        )
+
+
         new LightJockey(settings).start()
     }
 
