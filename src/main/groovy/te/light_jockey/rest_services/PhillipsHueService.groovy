@@ -33,11 +33,12 @@ class PhillipsHueService {
     }
 
     Map buildTransitionPayload(LightTransition transition) {
-        int offNow = new Random().nextInt(1000)
-        boolean shouldRandomlyTurnOff = offNow >= transition.percentChanceToTurnOff
+        // Danceability-dependent chance to turn the light off this iteration
+        boolean shouldRandomlyTurnOff = randomIntBetween(1, 10) <= transition.percentChanceToTurnOff
 
-        if(new Random().nextInt(10) % 3 == 0) {
-            transition.transitionDuration = transition.transitionDuration + 5
+        // 30% chance to transition the lights immediately
+        if(randomIntBetween(1, 10) <= 3) {
+            transition.transitionDuration = 0
         }
 
         Map payload = shouldRandomlyTurnOff ? [on: false] : [
@@ -56,6 +57,9 @@ class PhillipsHueService {
         return payload
     }
 
+    /**
+     * Returns random int between two bounds inclusive.
+     */
     private static int randomIntBetween(int lowerBound, int upperBound) {
         // Since "nextInt(upperBound - lowerBound) + lowerBound" is inclusive on lowerBound
         // and exclusive on upperBound, we add one to upperBound to make it inclusive.

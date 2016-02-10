@@ -73,9 +73,9 @@ class LightJockeyEngine extends TimerTask {
 
     // TODO: In the future, maybe randomly use the same payload for all lights so they sync temporarily.  Might look cool.
     private void transitionAllLights() {
-        Map transitionPayload = hueService.buildTransitionPayload(lightTransition)
         log.info "\rTransitioning lights now."
         settings.lightIds.each { lightId ->
+            Map transitionPayload = hueService.buildTransitionPayload(lightTransition)
             hueService.triggerLightTransition(lightId, transitionPayload)
         }
     }
