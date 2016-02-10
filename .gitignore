@@ -60,4 +60,4 @@ data/logs/
 
 #   LightJockeySettings   #
 ###########################
-/src/main/resources/light-jockey-settings.properties
+src/main/resources/light-jockey-settings.properties
