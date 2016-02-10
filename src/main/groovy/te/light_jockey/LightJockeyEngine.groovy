@@ -76,7 +76,7 @@ class LightJockeyEngine extends TimerTask {
         Map transitionPayload = hueService.buildTransitionPayload(lightTransition)
         log.info "\rTransitioning lights now."
         settings.lightIds.each { lightId ->
-            hueService.triggerLightTransition(lightId, hueService.buildTransitionPayload(lightTransition) )
+            hueService.triggerLightTransition(lightId, transitionPayload)
         }
     }
 
