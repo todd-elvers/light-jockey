@@ -7,14 +7,14 @@ class Startup {
 
     public static void main(String... args) {
         //TODO: Add validation to this process eventually
-        Properties propFile = PropertiesFileReader.readFile('light-jockey-settings.properties')
+        Properties props = PropertiesFileReader.readFile('light-jockey-settings.properties')
 
         LightJockeySettings settings = new LightJockeySettings(
-                zoneName      : propFile.zoneName,
-                echoNestApiKey: propFile.echoNestApiKey,
-                sonosApiUrl   : propFile.sonosApiUrl,
-                hueApiUrl     : propFile.hueApiUrl,
-                lightIds      : propFile.lightIds.toString().split(',')*.trim()
+                zoneName      : props.zoneName,
+                echoNestApiKey: props.echoNestApiKey,
+                sonosApiUrl   : props.sonosApiUrl,
+                hueApiUrl     : props.hueApiUrl,
+                lightIds      : props.lightIds.toString().split(',')*.trim()
         )
 
 
