@@ -33,9 +33,12 @@ class PhillipsHueService {
     }
 
     Map buildTransitionPayload(LightTransition transition) {
-        int randomIntBetween1and10 = randomIntBetween(1, 10)
-        int thresholdValueForTurningOff = (transition.percentChanceToTurnOff * 10).round()
-        boolean shouldRandomlyTurnOff = (randomIntBetween1and10 >= thresholdValueForTurningOff)
+        int offNow = new Random().nextInt(1000)
+        boolean shouldRandomlyTurnOff = offNow >= transition.percentChanceToTurnOff
+
+        if(new Random().nextInt(10) % 3 == 0) {
+            transition.transitionDuration = transition.transitionDuration + 5
+        }
 
         Map payload = shouldRandomlyTurnOff ? [on: false] : [
                 on            : true,
@@ -67,9 +70,9 @@ class PhillipsHueService {
 
         if (search.hasResults() && search.songs.first().hasMetadata()) {
             EchoNestSong.Metadata metadata = search.songs.first().metadata
-            danceability = (metadata.danceability * 100).round(TO_WHOLE_NUMBER).toInteger()
-            energy = (metadata.energy * 100).round(TO_WHOLE_NUMBER).toInteger()
-            tempo = (metadata.tempo * 100).round(TO_WHOLE_NUMBER).toInteger()
+            danceability = (metadata.danceability * 100).toInteger()
+            energy = (metadata.energy * 100).toInteger()
+            tempo = (metadata.tempo).toInteger()
         }
 
         log.info "Danceability = ${danceability}% | Energy = ${energy}% | Tempo = ${tempo}bpm"

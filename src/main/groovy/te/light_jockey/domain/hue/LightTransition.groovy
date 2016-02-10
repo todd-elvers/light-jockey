@@ -61,32 +61,32 @@ class LightTransition {
             case (0..19):
                 maxBrightness = 60
                 minBrightness = 40
-                percentChanceToTurnOff = 0
+                percentChanceToTurnOff = 1000
                 break
             case (20..39):
                 maxBrightness = 100
                 minBrightness = 80
-                percentChanceToTurnOff = 0
+                percentChanceToTurnOff = 1000
                 break
             case (40..59):
                 maxBrightness = 150
                 minBrightness = 90
-                percentChanceToTurnOff = 0.1
+                percentChanceToTurnOff = 900
                 break
             case (60..79):
                 maxBrightness = 200
                 minBrightness = 100
-                percentChanceToTurnOff = 0.2
+                percentChanceToTurnOff = 800
                 break
             case (80..99):
                 maxBrightness = 225
                 minBrightness = 150
-                percentChanceToTurnOff = 0.3
+                percentChanceToTurnOff = 800
                 break
             default:    // 100% or greater
                 maxBrightness = 255
                 minBrightness = 200
-                percentChanceToTurnOff = 0.4
+                percentChanceToTurnOff = 600
         }
 
         log.debug(this.toString())
