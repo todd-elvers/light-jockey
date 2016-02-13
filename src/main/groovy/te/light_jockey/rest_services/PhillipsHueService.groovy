@@ -12,8 +12,7 @@ import java.math.RoundingMode
 
 @Slf4j
 class PhillipsHueService {
-    public static final Map TO_BRIGHT_WHITE = [on: true, sat: 50, bri: 200, hue: 10_000, transitionTime: 50]
-    public static final MathContext TO_WHOLE_NUMBER = new MathContext(1, RoundingMode.HALF_UP)
+    public static final Map TO_BRIGHT_WHITE = [on: true, sat: 0, bri: 125, hue: 10_000, transitionTime: 5000]
     public static final int DANCEABILITY_DEFAULT = 50
     public static final int ENERGY_DEFAULT = 50
     public static final int TEMPO_DEFAULT = 100
@@ -23,6 +22,17 @@ class PhillipsHueService {
     PhillipsHueService(String hueBridgeUrl) {
         hueApiEndpoint = new RESTClient(hueBridgeUrl)
     }
+
+    void triggerAllLightTransitions(List<String> lightIds, Map payload) {
+        lightIds.each { String lightId ->
+            hueApiEndpoint.put(path: "/lights/$lightId/state") {
+                type ContentType.JSON
+                charset "UTF-8"
+                json payload
+            }
+        }
+    }
+
 
     void triggerLightTransition(String lightId, Map payload) {
         hueApiEndpoint.put(path: "/lights/$lightId/state") {
@@ -37,7 +47,7 @@ class PhillipsHueService {
         boolean shouldRandomlyTurnOff = randomIntBetween(1, 10) <= transition.percentChanceToTurnOff
 
         // 30% chance to transition the lights immediately
-        if(randomIntBetween(1, 10) <= 3) {
+        if (randomIntBetween(1, 10) <= 3) {
             transition.transitionDuration = 0
         }
 

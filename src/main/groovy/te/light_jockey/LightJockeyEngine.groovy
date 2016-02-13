@@ -31,6 +31,7 @@ class LightJockeyEngine extends TimerTask {
         this.sonosService = new SonosService(settings.sonosApiUrl)
         this.hueService = new PhillipsHueService(settings.hueApiUrl)
         this.echoNestService = new EchoNestService(settings.echoNestApiKey)
+        registerShutdownHook()
     }
 
     @Override
@@ -39,7 +40,7 @@ class LightJockeyEngine extends TimerTask {
         SonosZoneStatus zoneStatus = sonosService.getZoneStatus(settings.zoneName)
 
         if (zoneStatus.isPausedOrStopped()) {
-            log.info("Sonos player has paused or stopped.")
+            log.info("\nSonos player has paused or stopped.")
             cancel()
             return
         }
@@ -50,8 +51,9 @@ class LightJockeyEngine extends TimerTask {
                 transitionAllLights()
                 resetTimer()
             }
-        } else if(!zoneStatus.isCurrentlyPlaying(currentSongTitle)) {
-            log.info("New song detected: '$zoneStatus.currentSong.title' by $zoneStatus.currentSong.artist")
+        } else if (!zoneStatus.isCurrentlyPlaying(currentSongTitle)) {
+            //TODO: Can I do away with this newline?
+            log.info("\nNew song detected: '$zoneStatus.currentSong.title' by $zoneStatus.currentSong.artist")
             currentSongTitle = zoneStatus.currentSong.title
 
             EchoNestSearch search = echoNestService.search(zoneStatus.currentSong)
@@ -64,16 +66,19 @@ class LightJockeyEngine extends TimerTask {
 
     @Override
     boolean cancel() {
-        log.info("Transitioning lights to white & exiting program.")
-        settings.lightIds.each { lightId ->
-            hueService.triggerLightTransition(lightId, TO_BRIGHT_WHITE)
-        }
+        finalLightTransition()
         return super.cancel()
     }
 
-    // TODO: In the future, maybe randomly use the same payload for all lights so they sync temporarily.  Might look cool.
+    private void finalLightTransition() {
+        log.info("\nTransitioning lights to white & exiting program.")
+        hueService.triggerAllLightTransitions(settings.lightIds, [on: false])
+        sleep(500)
+        hueService.triggerAllLightTransitions(settings.lightIds, TO_BRIGHT_WHITE)
+    }
+
     private void transitionAllLights() {
-        log.info "\rTransitioning lights now."
+        log.info("\rTransitioning lights now.")
         settings.lightIds.each { lightId ->
             Map transitionPayload = hueService.buildTransitionPayload(lightTransition)
             hueService.triggerLightTransition(lightId, transitionPayload)
@@ -82,5 +87,11 @@ class LightJockeyEngine extends TimerTask {
 
     private void resetTimer() {
         timer.reset().start()
+    }
+
+    private void registerShutdownHook() {
+        addShutdownHook {
+            finalLightTransition()
+        }
     }
 }
