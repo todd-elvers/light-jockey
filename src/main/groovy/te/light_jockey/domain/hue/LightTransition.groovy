@@ -64,28 +64,28 @@ class LightTransition {
                 percentChanceToTurnOff = 0
                 break
             case (20..39):
-                maxBrightness = 100
-                minBrightness = 80
+                maxBrightness = 80
+                minBrightness = 60
                 percentChanceToTurnOff = 0
                 break
             case (40..59):
-                maxBrightness = 150
-                minBrightness = 90
+                maxBrightness = 100
+                minBrightness = 80
                 percentChanceToTurnOff = 1
                 break
             case (60..79):
-                maxBrightness = 200
-                minBrightness = 100
+                maxBrightness = 115
+                minBrightness = 90
                 percentChanceToTurnOff = 2
                 break
             case (80..99):
-                maxBrightness = 225
-                minBrightness = 150
+                maxBrightness = 130
+                minBrightness = 110
                 percentChanceToTurnOff = 3
                 break
             default:    // >= 100
-                maxBrightness = 255
-                minBrightness = 200
+                maxBrightness = 140
+                minBrightness = 120
                 percentChanceToTurnOff = 5
         }
 
