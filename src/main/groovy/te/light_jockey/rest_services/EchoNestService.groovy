@@ -33,7 +33,7 @@ class EchoNestService {
         if(search.hasResults()) {
             log.info "found song..."
             if(search.songs.first().hasMetadata()) {
-                log.info "metadata found!"
+                log.info "and metadata!!"
             } else {
                 log.info "but no metadata."
             }
