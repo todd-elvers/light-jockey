@@ -42,19 +42,16 @@ class LightJockeyEngine extends TimerTask {
         if (zoneStatus.isPausedOrStopped()) {
             log.info("\nSonos player has paused or stopped.")
             cancel()
-        } else if (zoneStatus.isCurrentlyPlaying(currentSongTitle)) {
+        } else if (zoneStatus.isNotCurrentlyPlaying(currentSongTitle)) {
+            log.info("\nNew song detected: '$zoneStatus.currentSong.title' by $zoneStatus.currentSong.artist")
+            currentSongTitle = zoneStatus.currentSong.title
+            hueTransitionProps.update(echoNestService.search(zoneStatus.currentSong))
+            performLightTransitionThenResetTimer()
+        } else {
             log.info("\r${calcSecondsToNextTransition()} seconds until next transition...")
             if (enoughTimeHasPassedSinceLastTransition()) {
                 performLightTransitionThenResetTimer()
             }
-        } else if (!zoneStatus.isCurrentlyPlaying(currentSongTitle)) {
-            log.info("\nNew song detected: '$zoneStatus.currentSong.title' by $zoneStatus.currentSong.artist")
-            currentSongTitle = zoneStatus.currentSong.title
-
-            EchoNestSearch search = echoNestService.search(zoneStatus.currentSong)
-            hueTransitionProps.update(search)
-
-            performLightTransitionThenResetTimer()
         }
     }
 
