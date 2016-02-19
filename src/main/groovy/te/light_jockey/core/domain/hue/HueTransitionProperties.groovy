@@ -43,11 +43,11 @@ class HueTransitionProperties {
      */
     private void updatePropertiesWithTempo(int tempo) {
         switch (tempo) {
-            case (0..100):
+            case (0..99):
                 secondsBetweenTransitions = 10
                 transitionDuration = 10
                 break
-            case (99..119):
+            case (100..119):
                 secondsBetweenTransitions = 5
                 transitionDuration = 7
                 break
