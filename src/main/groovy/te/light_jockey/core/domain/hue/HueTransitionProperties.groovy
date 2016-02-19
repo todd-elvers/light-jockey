@@ -109,17 +109,17 @@ class HueTransitionProperties {
             case (60..79):
                 maxBrightness = 115
                 minBrightness = 90
-                percentChanceToTurnOff = 2
+                percentChanceToTurnOff = 1
                 break
             case (80..99):
                 maxBrightness = 130
                 minBrightness = 110
-                percentChanceToTurnOff = 3
+                percentChanceToTurnOff = 1
                 break
             default:    // >= 100
                 maxBrightness = 140
                 minBrightness = 120
-                percentChanceToTurnOff = 5
+                percentChanceToTurnOff = 3
         }
     }
 
