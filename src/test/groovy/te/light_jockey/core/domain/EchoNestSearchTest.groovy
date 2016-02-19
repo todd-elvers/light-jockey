@@ -1,9 +1,9 @@
-package te.light_jockey.domain
+package te.light_jockey.core.domain
 
 import groovy.json.JsonSlurper
 import spock.lang.Shared
 import spock.lang.Specification
-import te.light_jockey.domain.echo_nest.EchoNestSearch
+import te.light_jockey.core.domain.echo_nest.EchoNestSearch
 
 class EchoNestSearchTest extends Specification {
 

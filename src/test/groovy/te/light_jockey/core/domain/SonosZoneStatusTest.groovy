@@ -1,9 +1,9 @@
-package te.light_jockey.domain
+package te.light_jockey.core.domain
 
 import groovy.json.JsonSlurper
 import spock.lang.Shared
 import spock.lang.Specification
-import te.light_jockey.domain.sonos.SonosZoneStatus
+import te.light_jockey.core.domain.sonos.SonosZoneStatus
 
 class SonosZoneStatusTest extends Specification {
 

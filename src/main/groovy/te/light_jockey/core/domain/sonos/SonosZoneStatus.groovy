@@ -1,4 +1,4 @@
-package te.light_jockey.domain.sonos
+package te.light_jockey.core.domain.sonos
 
 class SonosZoneStatus {
     final int volume

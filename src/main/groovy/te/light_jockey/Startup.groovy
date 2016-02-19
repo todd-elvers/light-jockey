@@ -1,6 +1,6 @@
 package te.light_jockey
 
-import te.light_jockey.domain.LightJockeySettings
+import te.light_jockey.core.domain.LightJockeySettings
 import te.light_jockey.misc.PropertiesFileReader
 
 class Startup {

@@ -1,4 +1,4 @@
-package te.light_jockey.domain
+package te.light_jockey.core.domain
 
 import groovy.transform.CompileStatic
 

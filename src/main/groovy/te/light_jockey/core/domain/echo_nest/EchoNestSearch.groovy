@@ -1,4 +1,4 @@
-package te.light_jockey.domain.echo_nest
+package te.light_jockey.core.domain.echo_nest
 
 class EchoNestSearch {
 

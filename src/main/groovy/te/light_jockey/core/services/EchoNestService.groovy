@@ -1,8 +1,8 @@
-package te.light_jockey.rest_services
+package te.light_jockey.core.services
 
 import groovy.util.logging.Slf4j
-import te.light_jockey.domain.echo_nest.EchoNestSearch
-import te.light_jockey.domain.sonos.SonosSong
+import te.light_jockey.core.domain.echo_nest.EchoNestSearch
+import te.light_jockey.core.domain.sonos.SonosSong
 import wslite.rest.RESTClient
 import wslite.rest.Response
 

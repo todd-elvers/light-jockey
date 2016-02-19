@@ -1,7 +1,6 @@
 import ch.qos.logback.core.ConsoleAppender
 import ch.qos.logback.core.encoder.LayoutWrappingEncoder
 import ch.qos.logback.core.status.NopStatusListener
-import ch.qos.logback.core.status.OnConsoleStatusListener
 import te.light_jockey.misc.NewlineOrCarriageReturnLayout
 
 import static ch.qos.logback.classic.Level.*

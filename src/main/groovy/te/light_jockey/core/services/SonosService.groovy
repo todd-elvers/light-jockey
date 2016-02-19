@@ -1,6 +1,6 @@
-package te.light_jockey.rest_services
+package te.light_jockey.core.services
 
-import te.light_jockey.domain.sonos.SonosZoneStatus
+import te.light_jockey.core.domain.sonos.SonosZoneStatus
 import wslite.rest.RESTClient
 import wslite.rest.Response
 

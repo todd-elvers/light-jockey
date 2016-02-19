@@ -1,7 +1,8 @@
 package te.light_jockey
 
 import groovy.util.logging.Slf4j
-import te.light_jockey.domain.LightJockeySettings
+import te.light_jockey.core.LightJockeyEngine
+import te.light_jockey.core.domain.LightJockeySettings
 
 import static te.light_jockey.misc.PropertiesFileReader.readAppProperty
 
