@@ -12,9 +12,11 @@ class SonosService {
     }
 
     SonosZoneStatus getZoneStatus(String zoneName) {
-        String urlEncodedZoneName = URLEncoder.encode(zoneName, "UTF-8")
-        Response sonosZoneResponse = sonosApiEndpoint.get(path: "/$urlEncodedZoneName/state")
+        Response sonosZoneResponse = sonosApiEndpoint.get(path: "/${urlEncode(zoneName)}/state")
         return new SonosZoneStatus(sonosZoneResponse.json)
     }
 
+    public static String urlEncode(String url) {
+        URLEncoder.encode(url, "UTF-8").replaceAll("\\+", "%20")
+    }
 }
