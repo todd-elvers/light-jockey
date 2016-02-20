@@ -48,13 +48,13 @@ public class NewlineOrCarriageReturnLayout extends LayoutBase<ILoggingEvent> {
     }
 
     /**
-     * This exists because if the previous log message started with a /r then the first
-     * character of the next log message will be 'consumed' by the /r. We get around this by
-     * simply providing a single space if the previous log message started with a /r.
+     * This exists because if the previous log message started with a /r then the next
+     * log message needs to start with a newline character, otherwise the previous
+     * log message's carriage return will 'consume' the first character of the next message.
      *
-     * @return either a single space or the empty string
+     * @return either a newline character or the empty string
      */
     private String determineLogMessagePrefix() {
-        return prevLogMessageStartedWithCarriageReturn ? " " : "";
+        return prevLogMessageStartedWithCarriageReturn ? "\n" : "";
     }
 }

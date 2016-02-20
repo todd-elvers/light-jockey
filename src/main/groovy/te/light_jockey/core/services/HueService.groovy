@@ -18,7 +18,7 @@ class HueService {
     }
 
     void finalTransition(List<String> lightIds) {
-        log.info("\nTransitioning lights to white & exiting program.")
+        log.info("Transitioning lights to white & exiting program.")
         transitionAllLightsWithSamePayload(lightIds, [on: false])
         sleep(500)
         transitionAllLightsWithSamePayload(lightIds, TO_BRIGHT_WHITE)

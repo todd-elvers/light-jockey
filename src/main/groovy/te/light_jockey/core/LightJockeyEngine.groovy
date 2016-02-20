@@ -3,7 +3,6 @@ package te.light_jockey.core
 import com.google.common.base.Stopwatch
 import groovy.util.logging.Slf4j
 import te.light_jockey.core.domain.LightJockeySettings
-import te.light_jockey.core.domain.echo_nest.EchoNestSearch
 import te.light_jockey.core.domain.hue.HueTransitionProperties
 import te.light_jockey.core.domain.sonos.SonosZoneStatus
 import te.light_jockey.core.services.EchoNestService
@@ -33,17 +32,16 @@ class LightJockeyEngine extends TimerTask {
         registerShutdownHook()
     }
 
-    //TODO: Can I do away with these newlines?
     @Override
     void run() {
         log.info("\rChecking Sonos player status...")
         SonosZoneStatus zoneStatus = sonosService.getZoneStatus(settings.zoneName)
 
         if (zoneStatus.isPausedOrStopped()) {
-            log.info("\nSonos player has paused or stopped.")
+            log.info("Sonos player has paused or stopped.")
             cancel()
         } else if (zoneStatus.isNotCurrentlyPlaying(currentSongTitle)) {
-            log.info("\nNew song detected: '$zoneStatus.currentSong.title' by $zoneStatus.currentSong.artist")
+            log.info("New song detected: '$zoneStatus.currentSong.title' by $zoneStatus.currentSong.artist")
             currentSongTitle = zoneStatus.currentSong.title
             hueTransitionProps.update(echoNestService.search(zoneStatus.currentSong))
             performLightTransitionThenResetTimer()
