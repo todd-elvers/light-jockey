@@ -47,19 +47,19 @@ class HueTransitionProperties {
         switch (tempo) {
             case (0..89):
                 secondsBetweenTransitions = 10
-                transitionDuration = 50
+                transitionDuration = 25
                 break
             case (90..119):
                 secondsBetweenTransitions = 5
-                transitionDuration = 40
+                transitionDuration = 15
                 break
             case (120..159):
                 secondsBetweenTransitions = 2
-                transitionDuration = 25
+                transitionDuration = 0
                 break
             default:    // 160 bpm or greater
                 secondsBetweenTransitions = 1
-                transitionDuration = 15
+                transitionDuration = 0
         }
     }
 

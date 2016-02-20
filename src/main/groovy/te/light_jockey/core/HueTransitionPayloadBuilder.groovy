@@ -17,7 +17,7 @@ class HueTransitionPayloadBuilder {
 
         log.debug("Transition payload:")
         payload.each { key, value ->
-            log.debug("{} = {}", key, value)
+            log.debug("\t{} = {}", key, value)
         }
 
         return payload
