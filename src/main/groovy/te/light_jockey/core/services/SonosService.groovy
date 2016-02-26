@@ -1,19 +1,27 @@
 package te.light_jockey.core.services
 
+import groovy.util.logging.Slf4j
 import te.light_jockey.core.domain.sonos.SonosZoneStatus
 import wslite.rest.RESTClient
 import wslite.rest.Response
 
-class SonosService {
-    final RESTClient sonosApiEndpoint
+@Slf4j
+class SonosService extends ApiEndpointService {
+    final RESTClient apiEndpoint
 
     SonosService(String sonosApiUrl) {
-        sonosApiEndpoint = new RESTClient(sonosApiUrl)
+        apiEndpoint = new RESTClient(sonosApiUrl)
     }
 
-    SonosZoneStatus getZoneStatus(String zoneName) {
-        Response sonosZoneResponse = sonosApiEndpoint.get(path: "/${urlEncode(zoneName)}/state")
-        return new SonosZoneStatus(sonosZoneResponse.json)
+    Optional<SonosZoneStatus> getZoneStatus(String zoneName) {
+        SonosZoneStatus zoneStatus
+
+        Optional<Response> responseOptional = super.get(path: "/${urlEncode(zoneName)}/state")
+        if(responseOptional.isPresent()) {
+            zoneStatus = new SonosZoneStatus(responseOptional.get().json)
+        }
+
+        return Optional.ofNullable(zoneStatus)
     }
 
     public static String urlEncode(String url) {

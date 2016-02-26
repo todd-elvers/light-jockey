@@ -3,6 +3,7 @@ package te.light_jockey.core
 import com.google.common.base.Stopwatch
 import groovy.util.logging.Slf4j
 import te.light_jockey.core.domain.LightJockeySettings
+import te.light_jockey.core.domain.echo_nest.EchoNestSearch
 import te.light_jockey.core.domain.hue.HueTransitionProperties
 import te.light_jockey.core.domain.sonos.SonosZoneStatus
 import te.light_jockey.core.services.EchoNestService
@@ -35,15 +36,22 @@ class LightJockeyEngine extends TimerTask {
     @Override
     void run() {
         log.info("\rChecking Sonos player status...")
-        SonosZoneStatus zoneStatus = sonosService.getZoneStatus(settings.zoneName)
+        Optional<SonosZoneStatus> response = sonosService.getZoneStatus(settings.zoneName)
+
+        if(!response.isPresent()) return
+
+        SonosZoneStatus zoneStatus = response.get()
 
         if (zoneStatus.isPausedOrStopped()) {
             log.info("Sonos player has paused or stopped.")
             cancel()
         } else if (zoneStatus.isNotCurrentlyPlaying(currentSongTitle)) {
             log.info("New song detected: '$zoneStatus.currentSong.title' by $zoneStatus.currentSong.artist")
-            currentSongTitle = zoneStatus.currentSong.title
-            hueTransitionProps.update(echoNestService.search(zoneStatus.currentSong))
+            updateCurrentSongTitle(zoneStatus)
+            Optional<EchoNestSearch> search = echoNestService.search(zoneStatus.currentSong)
+            if(search.isPresent()) {
+                hueTransitionProps.update(search.get())
+            }
             performLightTransitionThenResetTimer()
         } else {
             log.info("\r${calcSecondsToNextTransition()} seconds until next transition...")
@@ -70,6 +78,10 @@ class LightJockeyEngine extends TimerTask {
     private void performLightTransitionThenResetTimer() {
         hueService.transitionAllLightsWithDiffPayloads(settings.lightIds, hueTransitionProps)
         transitionTimer.reset().start()
+    }
+
+    private void updateCurrentSongTitle(SonosZoneStatus zoneStatus) {
+        currentSongTitle = zoneStatus.currentSong.title
     }
 
     //TODO: Does this trigger twice with if LightJockey.stop() is called?

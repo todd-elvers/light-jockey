@@ -7,18 +7,20 @@ import wslite.rest.RESTClient
 import wslite.rest.Response
 
 @Slf4j
-class EchoNestService {
-    final RESTClient echoNestApiEndpoint = new RESTClient('http://developer.echonest.com/')
+class EchoNestService extends ApiEndpointService {
+    final RESTClient apiEndpoint = new RESTClient('http://developer.echonest.com/')
     final String echoNestApiKey
 
     EchoNestService(String echoNestApiKey) {
         this.echoNestApiKey = echoNestApiKey
     }
 
-    EchoNestSearch search(SonosSong song) {
+    Optional<EchoNestSearch> search(SonosSong song) {
+        EchoNestSearch search
+
         log.info("Looking for metadata online...")
-        Response echoNestSearchResponse = echoNestApiEndpoint.get(
-                path: '/api/v4/song/search',
+        Optional<Response> response = super.get(
+                path : '/api/v4/song/search',
                 query: [
                         api_key: echoNestApiKey,
                         format : 'json',
@@ -28,19 +30,15 @@ class EchoNestService {
                         results: 3                  // Limit the results to 3 songs
                 ]
         )
-
-        EchoNestSearch search = new EchoNestSearch(echoNestSearchResponse.json)
-        if(search.hasResults()) {
-            log.info "found song..."
-            if(search.songs.first().hasMetadata()) {
-                log.info "and metadata!!"
-            } else {
-                log.info "but no metadata."
-            }
-        } else {
-            log.info "no results."
+        if (response.isPresent()) {
+            search = new EchoNestSearch(response.get().json)
         }
 
-        return search
+        foundSearchResultsWithMetadata(search) ? log.info("success!") : log.info("no results.")
+        return Optional.ofNullable(search)
+    }
+
+    private static boolean foundSearchResultsWithMetadata(EchoNestSearch search) {
+        search && search.hasResults() && search.songs.first().hasMetadata()
     }
 }

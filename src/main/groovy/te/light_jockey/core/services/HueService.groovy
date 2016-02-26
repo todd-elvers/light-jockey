@@ -5,16 +5,17 @@ import te.light_jockey.core.HueTransitionPayloadBuilder
 import te.light_jockey.core.domain.hue.HueTransitionProperties
 import wslite.rest.ContentType
 import wslite.rest.RESTClient
+import wslite.rest.RESTClientException
 
 @Slf4j
-class HueService {
+class HueService extends ApiEndpointService {
     public static final Map TO_BRIGHT_WHITE = [on: true, sat: 0, bri: 125, hue: 10_000, transitionTime: 5000]
 
     final HueTransitionPayloadBuilder hueTransitionPayloadBuilder = new HueTransitionPayloadBuilder()
-    final RESTClient hueApiEndpoint
+    final RESTClient apiEndpoint
 
     HueService(String hueBridgeUrl) {
-        hueApiEndpoint = new RESTClient(hueBridgeUrl)
+        apiEndpoint = new RESTClient(hueBridgeUrl)
     }
 
     void finalTransition(List<String> lightIds) {
@@ -44,10 +45,6 @@ class HueService {
     }
 
     void transitionLight(String lightId, Map payload) {
-        hueApiEndpoint.put(path: "/lights/$lightId/state") {
-            type ContentType.JSON
-            charset "UTF-8"
-            json payload
-        }
+        super.put(path: "/lights/$lightId/state", payload)
     }
 }
