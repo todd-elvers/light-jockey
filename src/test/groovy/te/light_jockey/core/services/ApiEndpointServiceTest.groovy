@@ -20,7 +20,6 @@ class ApiEndpointServiceTest extends Specification {
             apiEndpointService.apiEndpoint.put(_ as Map, _ as Closure) >> {
                 throw new RESTClientException("Endpoint error", Mock(HTTPRequest), Mock(HTTPResponse))
             }
-            println apiEndpointService.class
 
         when:
             apiEndpointService.get(path: 'some_path')

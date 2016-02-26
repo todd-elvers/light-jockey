@@ -3,9 +3,7 @@ package te.light_jockey.core.services
 import groovy.util.logging.Slf4j
 import te.light_jockey.core.HueTransitionPayloadBuilder
 import te.light_jockey.core.domain.hue.HueTransitionProperties
-import wslite.rest.ContentType
 import wslite.rest.RESTClient
-import wslite.rest.RESTClientException
 
 @Slf4j
 class HueService extends ApiEndpointService {
