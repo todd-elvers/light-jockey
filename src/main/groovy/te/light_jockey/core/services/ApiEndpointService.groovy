@@ -17,9 +17,7 @@ abstract class ApiEndpointService {
         try {
             response = getApiEndpoint().get(queryParams)
         } catch(RESTClientException exception) {
-            int code = exception.response.statusCode
-            String message = exception.response.statusMessage
-            log.error("Failed to communicate with the ${this.class.simpleName} endpoint ($code:$message).")
+            logRESTClientException(exception)
         }
 
         return Optional.ofNullable(response)
@@ -33,9 +31,13 @@ abstract class ApiEndpointService {
                 json payload
             }
         } catch (RESTClientException exception) {
-            int code = exception.response.statusCode
-            String message = exception.response.statusMessage
-            log.info("Failed to communicate with the ${this.class.simpleName} endpoint ($code:$message).")
+            logRESTClientException(exception)
         }
+    }
+
+    private void logRESTClientException(RESTClientException exception) {
+        String code = exception.response?.statusCode
+        String message = exception.response?.statusMessage ?: exception.message
+        log.error("Failed to communicate with the ${this.class.simpleName} endpoint (${code ? code + ' :: ' : ''}$message).")
     }
 }
