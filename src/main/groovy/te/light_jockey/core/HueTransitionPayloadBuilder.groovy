@@ -5,11 +5,13 @@ import te.light_jockey.core.domain.hue.HueTransitionProperties
 
 @Slf4j
 class HueTransitionPayloadBuilder {
+    private static final int MIN_HUE = 0
+    private static final int MAX_HUE = 65535
 
     Map buildPayloadAsMap(HueTransitionProperties lightTransitionProps) {
         Map payload = [
                 on            : true,
-                hue           : randomIntBetween(0, 65535),
+                hue           : randomIntBetween(MIN_HUE, MAX_HUE),
                 bri           : randomIntBetween(lightTransitionProps.minBrightness, lightTransitionProps.maxBrightness),
                 sat           : lightTransitionProps.saturation,
                 transitiontime: lightTransitionProps.transitionDuration
