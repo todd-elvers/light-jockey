@@ -1,10 +1,12 @@
 package te.light_jockey.core.services
 
+import groovy.util.logging.Slf4j
 import wslite.rest.ContentType
 import wslite.rest.RESTClient
 import wslite.rest.RESTClientException
 import wslite.rest.Response
 
+@Slf4j
 abstract class ApiEndpointService {
 
     abstract RESTClient getApiEndpoint()
