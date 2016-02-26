@@ -29,13 +29,13 @@ class HueTransitionProperties {
             tempo = (metadata.tempo).toInteger()
         }
 
-        log.info "Danceability = ${danceability}% | Energy = ${energy}% | Tempo = ${tempo}bpm"
+        log.info("Danceability = ${danceability}% | Energy = ${energy}% | Tempo = ${tempo}bpm")
 
         updatePropertiesWithTempo(tempo)
         updatePropertiesWithEnergy(energy)
         updatePropertiesWithDanceability(danceability)
 
-        log.debug "Hue transition properties:\n{}", this.toString()
+        log.debug("{}", this.toString())
     }
 
 
@@ -121,7 +121,8 @@ class HueTransitionProperties {
 
     @Override
     String toString() {
-        return this.properties
+        return "Hue transition properties:\n" +
+                getProperties()
                 .findAll { it.key != 'class' }
                 .collect { "\t$it.key = $it.value"}
     }
