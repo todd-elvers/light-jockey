@@ -7,12 +7,12 @@ import wslite.rest.RESTClientException
 import wslite.rest.Response
 
 @Slf4j
-abstract class ApiEndpointService {
+abstract class ApiEndpointService implements ApiEndpointValidation {
 
     abstract RESTClient getApiEndpoint()
 
     Optional<Response> get(Map queryParams) {
-        Response response
+        Response response = null
 
         try {
             response = getApiEndpoint().get(queryParams)
@@ -40,4 +40,5 @@ abstract class ApiEndpointService {
         String message = exception.response?.statusMessage ?: exception.message
         log.error("Failed to communicate with the ${this.class.simpleName} endpoint (${code ? code + ' :: ' : ''}$message).")
     }
+
 }
