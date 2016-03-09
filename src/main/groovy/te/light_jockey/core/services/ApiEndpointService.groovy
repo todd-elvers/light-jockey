@@ -38,6 +38,6 @@ abstract class ApiEndpointService {
     private void logRESTClientException(RESTClientException exception) {
         String code = exception.response?.statusCode
         String message = exception.response?.statusMessage ?: exception.message
-        log.error("Failed to communicate with the ${this.class.simpleName} endpoint (${code ? code + ' :: ' : ''}$message)...")
+        log.error("Failed to communicate with the ${this.class.simpleName} endpoint (${code ? code + ' :: ' : ''}$message).")
     }
 }
