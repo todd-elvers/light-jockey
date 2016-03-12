@@ -25,7 +25,6 @@ class LightJockeyEngine extends TimerTask {
     HueTransitionProperties hueTransitionProps = new HueTransitionProperties()
 
     LightJockeyEngine(LightJockeySettings settings) {
-        log.info(settings.toString())
         this.settings = settings
         this.sonosService = new SonosService(settings.sonosApiUrl)
         this.hueService = new HueService(settings.hueApiUrl)
@@ -35,7 +34,7 @@ class LightJockeyEngine extends TimerTask {
 
     @Override
     void run() {
-        log.info("\rChecking Sonos player status...")
+        log.info("\rChecking Sonos player status.")
         Optional<SonosZoneStatus> response = sonosService.getZoneStatus(settings.zoneName)
 
         if(!response.isPresent()) return
@@ -46,11 +45,12 @@ class LightJockeyEngine extends TimerTask {
             log.info("Sonos player has paused or stopped.")
             cancel()
         } else if (zoneStatus.isNotCurrentlyPlaying(currentSongTitle)) {
-            log.info("New song detected: '$zoneStatus.currentSong.title' by $zoneStatus.currentSong.artist")
+            log.info("\rNew song detected: '$zoneStatus.currentSong.title' by $zoneStatus.currentSong.artist")
             updateCurrentSongTitle(zoneStatus)
             Optional<EchoNestSearch> search = echoNestService.search(zoneStatus.currentSong)
             if(search.isPresent()) {
                 hueTransitionProps.update(search.get())
+                log.info("")
             }
             performLightTransitionThenResetTimer()
         } else {
