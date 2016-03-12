@@ -22,8 +22,9 @@ class LightJockey {
         log.info("Welcome to LightJockey v${readAppProperty('version')}!")
         log.info(settings.toString())
 
+        LightJockeyEngine engine = new LightJockeyEngine(settings)
         scheduler.scheduleAtFixedRate(
-                new LightJockeyEngine(settings),
+                engine,
                 STARTING_DELAY_IN_MS,
                 INTERVAL_DELAY_IN_MS
         )

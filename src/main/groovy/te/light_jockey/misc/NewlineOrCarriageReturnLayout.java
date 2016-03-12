@@ -15,17 +15,24 @@ public class NewlineOrCarriageReturnLayout extends LayoutBase<ILoggingEvent> {
     private boolean prevLogMessageStartedWithCarriageReturn = false;
 
     /**
-     * <p>This layout either simply returns the log message untouched, or it returns the log message
-     * with a newline character appended to it.
+     * <p>This is a special logger useful for handling useful-but-noisy logging scenarios.  The "useful" features are: <br/>
+     * <ul>
+     *     <li>writing a new log message to the same line the previous log message was on</li>
+     *     <li>replacing the previous log message with a new log message entirely</li>
+     * </ul>
      *
-     * <p><b>1st Case:</b> If a log message <b>does not</b> start with a carriage return <b>or</b>
-     * end with an ellipsis, then the log message is returned with a newline character appended to
-     * it.
+     * <p><h1>How it works:</h1>
+     * <p><b>1st Case:</b> If a log message ends with an ellipsis, then it is returned <b>without</b>
+     * a newline character appended to it.  This case allows for appending multiple log messages to the same line. <br/>
+     * The next log message encountered that does not end with an ellipsis terminates this case.
      *
-     * <p><b>2nd Case:</b> If a log message starts with a carriage return or ends with an ellipsis,
-     * then the log message is returned from this method with a right-padding of 50 spaces to
-     * replace any remnants of previous log messages that may have been longer in length than the
-     * current log message.
+     * <p><b>2st Case:</b> If a log message starts with an carriage return, then it is returned <b>without</b>
+     * a newline character appended to it, but instead receives a right-padding of 50 spaces.  Since this case
+     * is meant to handle useful-but-noisy messages and replace the previous log message in the console, a
+     * right padding is required because the previous log message may have been longer than the incoming message. <br/>
+     * The next log message encountered that does not end with a carriage return terminates this case.
+     *
+     * <p><b>3st Case:</b> All other log messages are simply printed <b>with</b> a newline character appended to them.
      *
      * @param event the logging event
      * @return the message that will be passed to the logger

@@ -6,6 +6,7 @@ import te.light_jockey.core.domain.LightJockeySettings
 import te.light_jockey.core.domain.echo_nest.EchoNestSearch
 import te.light_jockey.core.domain.hue.HueTransitionProperties
 import te.light_jockey.core.domain.sonos.SonosZoneStatus
+import te.light_jockey.core.services.ApiEndpointService
 import te.light_jockey.core.services.EchoNestService
 import te.light_jockey.core.services.HueService
 import te.light_jockey.core.services.SonosService
@@ -29,7 +30,8 @@ class LightJockeyEngine extends TimerTask {
         this.sonosService = new SonosService(settings.sonosApiUrl)
         this.hueService = new HueService(settings.hueApiUrl)
         this.echoNestService = new EchoNestService(settings.echoNestApiKey)
-        registerShutdownHook()
+        validateApiEndpointServices()
+        registerShutdownHookTransition()
     }
 
     @Override
@@ -37,7 +39,7 @@ class LightJockeyEngine extends TimerTask {
         log.info("\rChecking Sonos player status.")
         Optional<SonosZoneStatus> response = sonosService.getZoneStatus(settings.zoneName)
 
-        if(!response.isPresent()) return
+        if (!response.isPresent()) return
 
         SonosZoneStatus zoneStatus = response.get()
 
@@ -48,7 +50,7 @@ class LightJockeyEngine extends TimerTask {
             log.info("\rNew song detected: '$zoneStatus.currentSong.title' by $zoneStatus.currentSong.artist")
             updateCurrentSongTitle(zoneStatus)
             Optional<EchoNestSearch> search = echoNestService.search(zoneStatus.currentSong)
-            if(search.isPresent()) {
+            if (search.isPresent()) {
                 hueTransitionProps.update(search.get())
                 log.info("")
             }
@@ -84,8 +86,22 @@ class LightJockeyEngine extends TimerTask {
         currentSongTitle = zoneStatus.currentSong.title
     }
 
+    /**
+     * Ensures all api endpoints return a 200/OK to a HEAD request.
+     * Terminates the application otherwise.  (This functionality will likely change in time)
+     */
+    void validateApiEndpointServices() {
+        List<ApiEndpointService> services = [sonosService, hueService, echoNestService]
+        if(services.any({ !it.endpointReturns200ForHeadRequest() })) {
+            System.exit(-1)
+        }
+    }
+    private boolean allServiceEndpointsAreReturning200() {
+        return
+    }
+
     //TODO: Does this trigger twice with if LightJockey.stop() is called?
-    private void registerShutdownHook() {
+    private void registerShutdownHookTransition() {
         addShutdownHook {
             hueService.finalTransition(settings.lightIds)
         }
