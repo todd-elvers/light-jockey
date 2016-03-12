@@ -92,12 +92,9 @@ class LightJockeyEngine extends TimerTask {
      */
     void validateApiEndpointServices() {
         List<ApiEndpointService> services = [sonosService, hueService, echoNestService]
-        if(services.any({ !it.endpointReturns200ForHeadRequest() })) {
+        if (services.any({ !it.isApiEndpointAvailable() })) {
             System.exit(-1)
         }
-    }
-    private boolean allServiceEndpointsAreReturning200() {
-        return
     }
 
     //TODO: Does this trigger twice with if LightJockey.stop() is called?
