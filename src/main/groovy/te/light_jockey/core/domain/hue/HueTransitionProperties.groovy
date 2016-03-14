@@ -14,7 +14,7 @@ class HueTransitionProperties {
 
     int transitionDuration = 50 // In centi-seconds (1 sec = 100 cs = 1000 ms)
     int saturation = 100        // Valid values: 0-254
-    int minBrightness = 60      // Valid values: 0-254
+    int minBrightness = 80      // Valid values: 0-254
     int maxBrightness = 254     // Valid values: 0-254
 
     void update(EchoNestSearch search) {
@@ -46,11 +46,11 @@ class HueTransitionProperties {
     private void updatePropertiesWithTempo(int tempo) {
         switch (tempo) {
             case (0..89):
-                secondsBetweenTransitions = 10
+                secondsBetweenTransitions = 5
                 transitionDuration = 25
                 break
             case (90..119):
-                secondsBetweenTransitions = 5
+                secondsBetweenTransitions = 3
                 transitionDuration = 15
                 break
             case (120..159):
@@ -94,27 +94,27 @@ class HueTransitionProperties {
     private void updatePropertiesWithDanceability(int danceability) {
         switch (danceability) {
             case (0..19):
-                minBrightness = 40
+                minBrightness = 50
                 maxBrightness = 60
                 break
             case (20..39):
-                minBrightness = 60
+                minBrightness = 50
                 maxBrightness = 80
                 break
             case (40..59):
-                minBrightness = 80
+                minBrightness = 50
                 maxBrightness = 100
                 break
             case (60..79):
-                minBrightness = 90
+                minBrightness = 60
                 maxBrightness = 115
                 break
             case (80..99):
-                minBrightness = 110
+                minBrightness = 80
                 maxBrightness = 130
                 break
             default:    // >= 100
-                minBrightness = 120
+                minBrightness = 100
                 maxBrightness = 140
         }
     }
