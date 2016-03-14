@@ -1,7 +1,7 @@
 package te.light_jockey
 
 import groovy.util.logging.Slf4j
-import te.light_jockey.core.LightJockeyEngine
+import te.light_jockey.core.EchoNestLightJockeyEngine
 import te.light_jockey.core.domain.LightJockeySettings
 
 import static te.light_jockey.misc.PropertiesFileReader.readAppProperty
@@ -22,7 +22,7 @@ class LightJockey {
         log.info("Welcome to LightJockey v${readAppProperty('version')}!")
         log.info(settings.toString())
 
-        LightJockeyEngine engine = new LightJockeyEngine(settings)
+        EchoNestLightJockeyEngine engine = new EchoNestLightJockeyEngine(settings)
         scheduler.scheduleAtFixedRate(
                 engine,
                 STARTING_DELAY_IN_MS,

@@ -14,7 +14,7 @@ import te.light_jockey.core.services.SonosService
 import static java.util.concurrent.TimeUnit.SECONDS
 
 @Slf4j
-class LightJockeyEngine extends TimerTask {
+class EchoNestLightJockeyEngine extends TimerTask {
 
     final LightJockeySettings settings
     final SonosService sonosService
@@ -25,7 +25,9 @@ class LightJockeyEngine extends TimerTask {
     String currentSongTitle = 'No track'
     HueTransitionProperties hueTransitionProps = new HueTransitionProperties()
 
-    LightJockeyEngine(LightJockeySettings settings) {
+    // NOTE: This requires the 'node-sonos-http-api' app running in the background to function
+    // NOTE: This requires an API key to EchoNest to function
+    EchoNestLightJockeyEngine(LightJockeySettings settings) {
         this.settings = settings
         this.sonosService = new SonosService(settings.sonosApiUrl)
         this.hueService = new HueService(settings.hueApiUrl)
