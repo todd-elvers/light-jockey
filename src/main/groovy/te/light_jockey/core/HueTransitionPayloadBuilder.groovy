@@ -10,7 +10,6 @@ class HueTransitionPayloadBuilder {
 
     Map buildPayloadAsMap(HueTransitionProperties lightTransitionProps) {
         Map payload = [
-                on            : true,
                 hue           : randomIntBetween(MIN_HUE, MAX_HUE),
                 bri           : randomIntBetween(lightTransitionProps.minBrightness, lightTransitionProps.maxBrightness),
                 sat           : lightTransitionProps.saturation,
