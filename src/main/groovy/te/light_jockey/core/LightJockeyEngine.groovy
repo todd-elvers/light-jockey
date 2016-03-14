@@ -45,7 +45,6 @@ class LightJockeyEngine extends TimerTask {
 
         if (zoneStatus.isPausedOrStopped()) {
             log.info("Sonos player has paused or stopped.")
-            cancel()
         } else if (zoneStatus.isNotCurrentlyPlaying(currentSongTitle)) {
             log.info("\rNew song detected: '$zoneStatus.currentSong.title' by $zoneStatus.currentSong.artist")
             updateCurrentSongTitle(zoneStatus)
