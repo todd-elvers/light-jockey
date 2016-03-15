@@ -29,7 +29,7 @@ class PropertiesFileReader {
         }
     }
 
-    private static Properties loadPropertiesFromInputStream(InputStream inputStream) {
+    static Properties loadPropertiesFromInputStream(InputStream inputStream) {
         try {
             def properties = new Properties()
             properties.load(inputStream)

@@ -8,12 +8,15 @@ import com.philips.lighting.hue.sdk.heartbeat.PHHeartbeatManager
 import com.philips.lighting.model.PHBridge
 import com.philips.lighting.model.PHHueParsingError
 import groovy.util.logging.Slf4j
+import te.light_jockey.core.ConfigHandler
 
 @Slf4j
 class HueSDKEventListener implements PHSDKListener {
 
+    boolean authenticationWasRequired = false
     int pushlinkButtonTimeoutCounter = 0
     PHHueSDK hueSDK = PHHueSDK.getInstance()
+    ConfigHandler configHandler = ConfigHandler.getInstance()
 
     //TODO: Handle multiple access points being returned
     @Override
@@ -50,6 +53,13 @@ class HueSDKEventListener implements PHSDKListener {
         PHHeartbeatManager.instance.enableLightsHeartbeat(bridge, PHHueSDK.HB_INTERVAL)
         log.info("\rBridge Connected!")
         log.debug("Bridge details:\n\tUsername: $username\n\tLights: ${bridge.getResourceCache().getAllLights()*.identifier.join(',')}")
+        if(authenticationWasRequired) {
+            authenticationWasRequired = false
+            configHandler.updateConfigFile([
+                    (ConfigHandler.USERNAME_PROP_NAME): username,
+                    (ConfigHandler.IP_ADDRESS_PROP_NAME): bridge.getResourceCache().getBridgeConfiguration().getIpAddress()
+            ])
+        }
     }
 
     /**
@@ -62,6 +72,7 @@ class HueSDKEventListener implements PHSDKListener {
     void onAuthenticationRequired(PHAccessPoint accessPoint) {
         log.info("Authentication required!  Please press the blue button on the Hue Bridge.")
         hueSDK.startPushlinkAuthentication(accessPoint)
+        authenticationWasRequired = true
     }
 
     @Override

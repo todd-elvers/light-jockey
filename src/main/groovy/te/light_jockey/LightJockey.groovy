@@ -16,8 +16,12 @@ class LightJockey {
 
         HueSDKManager.initializeSDK()
         HueSDKManager.registerSDKListener(sdkListener)
-        HueSDKManager.triggerBridgeSearch()
-
+        if(HueSDKManager.configFileIsValid()) {
+            HueSDKManager.connectToBridgeFromConfigFile()
+        } else {
+            HueSDKManager.configHandler.createConfigFile()
+            HueSDKManager.triggerBridgeSearch()
+        }
 
 
     }
