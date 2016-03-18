@@ -85,6 +85,7 @@ class HueSDKEventListener implements PHSDKListener {
         log.info("Connection to bridge lost!")
     }
 
+    //TODO: Handle no bridges found (error 1157)
     @Override
     void onError(int code, final String message) {
         switch (code) {
