@@ -56,8 +56,8 @@ class HueSDKEventListener implements PHSDKListener {
         if(authenticationWasRequired) {
             authenticationWasRequired = false
             configHandler.updateConfigFile([
-                    (ConfigHandler.USERNAME_PROP_NAME): username,
-                    (ConfigHandler.IP_ADDRESS_PROP_NAME): bridge.getResourceCache().getBridgeConfiguration().getIpAddress()
+                    (ConfigHandler.USERNAME_PROP)  : username,
+                    (ConfigHandler.IP_ADDRESS_PROP): bridge.getResourceCache().getBridgeConfiguration().getIpAddress()
             ])
         }
     }

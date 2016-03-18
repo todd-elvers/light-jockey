@@ -8,8 +8,8 @@ import com.philips.lighting.hue.sdk.heartbeat.PHHeartbeatManager
 import groovy.util.logging.Slf4j
 import te.light_jockey.core.ConfigHandler
 
-import static ConfigHandler.IP_ADDRESS_PROP_NAME
-import static ConfigHandler.USERNAME_PROP_NAME
+import static ConfigHandler.IP_ADDRESS_PROP
+import static ConfigHandler.USERNAME_PROP
 
 /**
  * This is a wrapper around the PHHueSDK class, and other Philips Hue classes, abstracting away the
@@ -44,8 +44,8 @@ class HueSDKManager {
         log.info("Found Hue credentials in LightJockey config file.")
         Properties props = configHandler.readConfigProperties()
         PHAccessPoint accessPoint = new PHAccessPoint(
-                ipAddress: props.getProperty(IP_ADDRESS_PROP_NAME),
-                username : props.getProperty(USERNAME_PROP_NAME)
+                ipAddress: props.getProperty(IP_ADDRESS_PROP),
+                username : props.getProperty(USERNAME_PROP)
         )
         SDK.connect(accessPoint)
     }

@@ -21,11 +21,11 @@ class PropertiesFileReader {
         return propFileInputStream
     }
 
-    static Properties readFile(String propFilename) {
+    static Properties readFileFromResourcesDirOrProjectDir(String propFilename) {
         try {
             return loadPropertiesFromInputStream(resolveInputStream(propFilename))
         } catch (ignored) {
-            throw new RuntimeException("Unable to read from properties file.")
+            throw new RuntimeException("Unable to read from properties file '$propFilename'.")
         }
     }
 
