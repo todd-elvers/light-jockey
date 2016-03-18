@@ -23,12 +23,8 @@ class HueSDKEventListener implements PHSDKListener {
     void onAccessPointsFound(List<PHAccessPoint> accessPoints) {
         def accessPoint = accessPoints.first()
         log.info("Access point found! (IP=$accessPoint.ipAddress)")
-        resetPushlinkButtonTimeoutCounter()
-        hueSDK.connect(accessPoint)
-    }
-
-    private void resetPushlinkButtonTimeoutCounter() {
         pushlinkButtonTimeoutCounter = 30
+        hueSDK.connect(accessPoint)
     }
 
     @Override
@@ -39,8 +35,7 @@ class HueSDKEventListener implements PHSDKListener {
     }
 
     //TODO: Pass control to application
-    //TODO: Store IP & username somewhere
-    /**
+    /**≠
      * This callback is triggered once bridge authentication completes and is passed the username that the bridge generated for us.
      * <p>This finishes the bridge-connection process and sets up a heartbeat to the bridge every 10 seconds.
      * 

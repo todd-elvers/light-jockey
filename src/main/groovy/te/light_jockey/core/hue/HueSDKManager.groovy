@@ -22,13 +22,9 @@ class HueSDKManager {
     public static final PHHueSDK SDK = PHHueSDK.getInstance()
 
     static void initializeSDK() {
-        SDK.with {
-            setAppName("light-jockey")
-            setDeviceName("desktop-application")
-        }
-        addShutdownHook {
-            shutdownSDK()
-        }
+        SDK.setAppName("light-jockey")
+        SDK.setDeviceName("desktop-application")
+        addShutdownHook { shutdownSDK() }
     }
 
 
@@ -41,7 +37,7 @@ class HueSDKManager {
     }
 
     static void connectToBridgeFromConfigFile() {
-        log.info("Found Hue credentials in LightJockey config file.")
+        log.debug("Using Hue credentials from config file.")
         Properties props = configHandler.readConfigProperties()
         PHAccessPoint accessPoint = new PHAccessPoint(
                 ipAddress: props.getProperty(IP_ADDRESS_PROP),
