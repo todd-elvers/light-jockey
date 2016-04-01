@@ -21,8 +21,8 @@
 * 
 */
 
+package te.light_jockey.core.audio_processing.tarsos_dsp;
 
-package te.light_jockey.core.audio_processing;
 
 import java.io.IOException;
 import java.util.List;

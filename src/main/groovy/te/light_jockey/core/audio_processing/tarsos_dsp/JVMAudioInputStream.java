@@ -21,12 +21,13 @@
 * 
 */
 
-package te.light_jockey.core.audio_processing;
+package te.light_jockey.core.audio_processing.tarsos_dsp;
+
+ import java.io.IOException;
 
  import javax.sound.sampled.AudioFormat;
  import javax.sound.sampled.AudioFormat.Encoding;
  import javax.sound.sampled.AudioInputStream;
- import java.io.IOException;
 
 /**
  * Encapsulates an {@link AudioInputStream} to make it work with the core TarsosDSP library.
@@ -60,7 +61,6 @@ public class JVMAudioInputStream implements TarsosDSPAudioInputStream {
 
 	@Override
 	public long getFrameLength() {
-
 		return underlyingStream.getFrameLength();
 	}
 

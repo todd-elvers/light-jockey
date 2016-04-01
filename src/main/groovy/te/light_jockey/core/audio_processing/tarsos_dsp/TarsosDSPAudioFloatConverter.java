@@ -46,14 +46,14 @@
  * CA 95054 USA or visit www.sun.com if you need additional information or
  * have any questions.
  */
-package te.light_jockey.core.audio_processing;
+package te.light_jockey.core.audio_processing.tarsos_dsp;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 
-import static te.light_jockey.core.audio_processing.TarsosDSPAudioFormat.Encoding;
+import static te.light_jockey.core.audio_processing.tarsos_dsp.TarsosDSPAudioFormat.Encoding;
 
 
 /**

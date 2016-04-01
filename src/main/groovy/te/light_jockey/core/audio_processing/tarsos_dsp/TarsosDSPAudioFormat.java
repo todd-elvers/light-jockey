@@ -21,7 +21,7 @@
 * 
 */
 
-package te.light_jockey.core.audio_processing;
+package te.light_jockey.core.audio_processing.tarsos_dsp;
 
 /*
  * Copyright (c) 1999, 2007, Oracle and/or its affiliates. All rights reserved.

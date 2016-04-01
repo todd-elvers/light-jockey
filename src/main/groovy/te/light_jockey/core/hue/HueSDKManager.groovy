@@ -20,12 +20,20 @@ class HueSDKManager {
     private static final ConfigHandler configHandler = ConfigHandler.getInstance()
     private static final PHHueSDK hueSDK = PHHueSDK.getInstance()
 
+    /**
+     * Configures the Hue SDK's appName & deviceName (but does not overwrite them if they already exist),
+     * and adds a shutdown hook to destroy the SDK reference when the JVM is terminated.
+     */
     static void initSDKIfNecessary(String appName) {
         hueSDK.appName = hueSDK.appName ?: appName
         hueSDK.deviceName = hueSDK.deviceName ?: "${getProperty('user.name')}@${getProperty('os.name')}"
         addShutdownHook { shutdownSDK() }
     }
 
+    /**
+     * Registers a an implementation of PHSDKListener with the Hue SDK.  Does not allow registering
+     * the same listener twice.
+     */
     static void registerSDKListener(PHSDKListener listener) {
         PHNotificationManager notificationManager = hueSDK.notificationManager as PHNotificationManagerImpl
         boolean thisListenerIsNotAlreadyRegistered = !notificationManager.localSDKListeners.contains(listener)
@@ -38,6 +46,9 @@ class HueSDKManager {
         configHandler.configFileExists() && configHandler.configFileIsStillValid()
     }
 
+    /**
+     * Creates the LightJockey config file if it doesn't already exist
+     */
     static void createConfigFileIfNecessary() {
         if(!configHandler.configFileExists()) configHandler.createConfigFile()
     }
@@ -65,7 +76,7 @@ class HueSDKManager {
 
     /**
      * This calls the necessary methods to gracefully terminate the SDK and its connection to the Hue bridge.
-     * <p>If this method is called after the SDK has already been shutdown it does nothing.
+     * <p>If this method is called after the SDK has already been shutdown nothing happens.
      */
     static void shutdownSDK() {
         // Check if the SDK has been destroyed already or not

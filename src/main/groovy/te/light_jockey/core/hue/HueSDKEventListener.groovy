@@ -10,6 +10,7 @@ import com.philips.lighting.model.PHHueParsingError
 import groovy.transform.EqualsAndHashCode
 import groovy.util.logging.Slf4j
 import te.light_jockey.core.ConfigHandler
+import te.light_jockey.core.hue.callbacks.BridgeConnectedCallback
 
 @Slf4j
 @EqualsAndHashCode(excludes = ['hueSDK', 'configHandler'])

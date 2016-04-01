@@ -1,5 +1,7 @@
 package te.light_jockey.core.hue
 
+import te.light_jockey.core.hue.callbacks.BridgeConnectedCallback
+
 class HueBridgeService {
 
     HueBridgeService(String appName, BridgeConnectedCallback callback) {
