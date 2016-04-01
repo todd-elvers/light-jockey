@@ -1,15 +1,14 @@
 package te.light_jockey.core.hue
 
-import com.philips.lighting.hue.sdk.PHAccessPoint
-import com.philips.lighting.hue.sdk.PHBridgeSearchManager
-import com.philips.lighting.hue.sdk.PHHueSDK
-import com.philips.lighting.hue.sdk.PHSDKListener
+import com.philips.lighting.hue.sdk.*
 import com.philips.lighting.hue.sdk.heartbeat.PHHeartbeatManager
+import com.philips.lighting.hue.sdk.notification.impl.PHNotificationManagerImpl
 import groovy.util.logging.Slf4j
 import te.light_jockey.core.ConfigHandler
 
 import static ConfigHandler.IP_ADDRESS_PROP
 import static ConfigHandler.USERNAME_PROP
+import static java.lang.System.getProperty
 
 /**
  * This is a wrapper around the PHHueSDK class, and other Philips Hue classes, abstracting away the
@@ -18,32 +17,39 @@ import static ConfigHandler.USERNAME_PROP
 @Slf4j
 class HueSDKManager {
 
-    public static final ConfigHandler configHandler = ConfigHandler.getInstance()
-    public static final PHHueSDK SDK = PHHueSDK.getInstance()
+    private static final ConfigHandler configHandler = ConfigHandler.getInstance()
+    private static final PHHueSDK hueSDK = PHHueSDK.getInstance()
 
-    static void initializeSDK() {
-        SDK.setAppName("light-jockey")
-        SDK.setDeviceName("desktop-application")
+    static void initSDKIfNecessary(String appName) {
+        hueSDK.appName = hueSDK.appName ?: appName
+        hueSDK.deviceName = hueSDK.deviceName ?: "${getProperty('user.name')}@${getProperty('os.name')}"
         addShutdownHook { shutdownSDK() }
     }
 
-
     static void registerSDKListener(PHSDKListener listener) {
-        SDK.notificationManager.registerSDKListener(listener)
+        PHNotificationManager notificationManager = hueSDK.notificationManager as PHNotificationManagerImpl
+        boolean thisListenerIsNotAlreadyRegistered = !notificationManager.localSDKListeners.contains(listener)
+        if(thisListenerIsNotAlreadyRegistered){
+            hueSDK.notificationManager.registerSDKListener(listener)
+        }
     }
 
-    static boolean configFileIsValid() {
+    static boolean configFileHasValidCredentials() {
         configHandler.configFileExists() && configHandler.configFileIsStillValid()
     }
 
-    static void connectToBridgeFromConfigFile() {
+    static void createConfigFileIfNecessary() {
+        if(!configHandler.configFileExists()) configHandler.createConfigFile()
+    }
+
+    static void connectToBridgeUsingConfigFileCredentials() {
         log.debug("Using Hue credentials from config file.")
         Properties props = configHandler.readConfigProperties()
         PHAccessPoint accessPoint = new PHAccessPoint(
                 ipAddress: props.getProperty(IP_ADDRESS_PROP),
                 username : props.getProperty(USERNAME_PROP)
         )
-        SDK.connect(accessPoint)
+        hueSDK.connect(accessPoint)
     }
 
     /**
@@ -51,9 +57,9 @@ class HueSDKManager {
      * <p>The search can take up to 10 seconds to complete.
      * <p>Upon completion of the search, the PHSDKListener.onBridgeConnected() method will be called.
      */
-    static void triggerBridgeSearch() {
+    static void triggerBridgeSearchOverLAN() {
         log.info("Searching for Hue bridges on the LAN...")
-        def bridgeSearchManager = SDK.getSDKService(PHHueSDK.SEARCH_BRIDGE) as PHBridgeSearchManager
+        def bridgeSearchManager = hueSDK.getSDKService(PHHueSDK.SEARCH_BRIDGE) as PHBridgeSearchManager
         bridgeSearchManager.search(true, true)  // void search(isUpnpSearch, isPortalSearch)
     }
 
@@ -63,7 +69,7 @@ class HueSDKManager {
      */
     static void shutdownSDK() {
         // Check if the SDK has been destroyed already or not
-        boolean isNotAlreadyShutdown = SDK.@instance as Boolean
+        boolean isNotAlreadyShutdown = hueSDK.@instance as Boolean
         if (isNotAlreadyShutdown) {
             log.info("Shutting down the Hue connection.")
             shutdown()
@@ -71,9 +77,9 @@ class HueSDKManager {
     }
 
     private static void shutdown() {
-        PHHeartbeatManager.instance.disableAllHeartbeats(SDK.selectedBridge)
-        SDK.disconnect(SDK.selectedBridge)
-        SDK.destroySDK()
+        PHHeartbeatManager.instance.disableAllHeartbeats(hueSDK.selectedBridge)
+        hueSDK.disconnect(hueSDK.selectedBridge)
+        hueSDK.destroySDK()
     }
 
 }

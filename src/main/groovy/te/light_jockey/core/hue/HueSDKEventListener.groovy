@@ -7,16 +7,24 @@ import com.philips.lighting.hue.sdk.PHSDKListener
 import com.philips.lighting.hue.sdk.heartbeat.PHHeartbeatManager
 import com.philips.lighting.model.PHBridge
 import com.philips.lighting.model.PHHueParsingError
+import groovy.transform.EqualsAndHashCode
 import groovy.util.logging.Slf4j
 import te.light_jockey.core.ConfigHandler
 
 @Slf4j
+@EqualsAndHashCode(excludes = ['hueSDK', 'configHandler'])
 class HueSDKEventListener implements PHSDKListener {
 
-    boolean authenticationWasRequired = false
-    int pushlinkButtonTimeoutCounter = 0
-    PHHueSDK hueSDK = PHHueSDK.getInstance()
-    ConfigHandler configHandler = ConfigHandler.getInstance()
+    private PHHueSDK hueSDK = PHHueSDK.getInstance()
+    private ConfigHandler configHandler = ConfigHandler.getInstance()
+    private boolean authenticationWasRequired = false
+    private int pushlinkButtonTimeoutCounter = 0
+
+    BridgeConnectedCallback bridgeConnectedCallback
+
+    HueSDKEventListener(BridgeConnectedCallback callback) {
+        this.bridgeConnectedCallback = callback
+    }
 
     //TODO: Handle multiple access points being returned
     @Override
@@ -34,8 +42,7 @@ class HueSDKEventListener implements PHSDKListener {
         }
     }
 
-    //TODO: Pass control to application
-    /**≠
+    /**
      * This callback is triggered once bridge authentication completes and is passed the username that the bridge generated for us.
      * <p>This finishes the bridge-connection process and sets up a heartbeat to the bridge every 10 seconds.
      * 
@@ -47,14 +54,17 @@ class HueSDKEventListener implements PHSDKListener {
         hueSDK.setSelectedBridge(bridge)
         PHHeartbeatManager.instance.enableLightsHeartbeat(bridge, PHHueSDK.HB_INTERVAL)
         log.info("\rBridge Connected!")
-        log.debug("Bridge details:\n\tUsername: $username\n\tLights: ${bridge.getResourceCache().getAllLights()*.identifier.join(',')}")
+        log.debug("Bridge details:\n\tUsername: $username\n\tLights: ${bridge.resourceCache.allLights*.identifier.join(',')}")
         if(authenticationWasRequired) {
             authenticationWasRequired = false
             configHandler.updateConfigFile([
                     (ConfigHandler.USERNAME_PROP)  : username,
-                    (ConfigHandler.IP_ADDRESS_PROP): bridge.getResourceCache().getBridgeConfiguration().getIpAddress()
+                    (ConfigHandler.IP_ADDRESS_PROP): bridge.resourceCache.bridgeConfiguration.ipAddress
             ])
         }
+
+        // Everything's done and we're connected - execute the callback
+        bridgeConnectedCallback.execute()
     }
 
     /**
