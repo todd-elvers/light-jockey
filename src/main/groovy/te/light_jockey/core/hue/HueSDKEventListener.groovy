@@ -38,7 +38,7 @@ class HueSDKEventListener implements PHSDKListener {
     @Override
     void onCacheUpdated(List<Integer> cacheNotifications, PHBridge bridge) {
         if (cacheNotifications.contains(PHMessageType.LIGHTS_CACHE_UPDATED)) {
-            log.info("Lights Cache Updated")
+//            log.info("Lights Cache Updated")
         }
     }
 
