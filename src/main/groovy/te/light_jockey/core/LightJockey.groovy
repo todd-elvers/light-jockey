@@ -4,24 +4,22 @@ import com.philips.lighting.hue.sdk.PHHueSDK
 import com.philips.lighting.model.PHBridgeResourcesCache
 import com.philips.lighting.model.PHLight
 import com.philips.lighting.model.PHLightState
-import com.sun.media.sound.DirectAudioDevice
 import groovy.util.logging.Slf4j
 import te.light_jockey.core.audio_processing.SoundPressureLevelDetector
 import te.light_jockey.core.audio_processing.tarsos_dsp.AudioDispatcher
+import te.light_jockey.core.audio_processing.tarsos_dsp.AudioDispatcherFactory
 import te.light_jockey.core.audio_processing.tarsos_dsp.AudioEvent
 import te.light_jockey.core.audio_processing.tarsos_dsp.AudioProcessor
-import te.light_jockey.core.audio_processing.tarsos_dsp.JVMAudioInputStream
-
-import javax.sound.sampled.*
 
 import static te.light_jockey.misc.PropertiesFileReader.readAppProperty
 
 @Slf4j
 class LightJockey implements AudioProcessor {
+    private static final int SAMPLE_RATE = 44100
     private static final int AUDIO_BUFFER_SIZE = 512
     private static final int BUFFER_OVERLAP = 0
 
-    double threshold = -70
+    double threshold = -47
     PHHueSDK hueSDK = PHHueSDK.getInstance()
     SoundPressureLevelDetector splDetector = new SoundPressureLevelDetector()
 
@@ -29,20 +27,10 @@ class LightJockey implements AudioProcessor {
     void start() {
         log.info("Welcome to LightJockey v${readAppProperty('version')}!\n")
 
-        // Find the system's microphone
-        Mixer microphone = getRecordingDevices().first()
-
-        // Open a connection to the microphone
-        JVMAudioInputStream audioStream = openAudioInputStream(microphone)
-
         // Create an audio dispatcher to dispatch data from the microphone to audio processor(s)
-        AudioDispatcher dispatcher = new AudioDispatcher(audioStream, AUDIO_BUFFER_SIZE, BUFFER_OVERLAP)
-
-        // Add our sound pressure level detector to translate the raw microphone data to dB SPL
-        dispatcher.addAudioProcessor(splDetector)
-
-        // Add our LightJockey processor so we can read the dB SPL value from the SPL detector and change the lights accordingly
-        dispatcher.addAudioProcessor(this)
+        AudioDispatcher dispatcher = AudioDispatcherFactory.fromDefaultMicrophone(SAMPLE_RATE, AUDIO_BUFFER_SIZE, BUFFER_OVERLAP)
+        dispatcher.addAudioProcessor(splDetector)   // Add our sound pressure level detector to translate the raw microphone data to dB SPL
+        dispatcher.addAudioProcessor(this)          // Add our LightJockey processor so we can read the dB SPL value from the SPL detector and change the lights accordingly
 
         // Offload the dispatcher to a different thread & start it up
         new Thread(dispatcher, "LightJockey - Audio Dispatching").start()
@@ -55,8 +43,11 @@ class LightJockey implements AudioProcessor {
 
             sleep(randomIntBetween(0, 300))
 
-//            randomLightToRandomColor()
+            // Dynamic light changing (via microphone input)
+            randomLightToRandomColor()
 //            allLightsToRandomColors()
+
+            // Static light changing
 //            randomFlashMode()
 //            discoMode()
         }
@@ -66,39 +57,6 @@ class LightJockey implements AudioProcessor {
     @Override
     void processingFinished() {
         log.info("Processing finished.")
-    }
-
-
-    // TODO: Figure out when to close this stream
-    private JVMAudioInputStream openAudioInputStream(Mixer microphone) {
-        AudioFormat format = new AudioFormat(
-                44100,  // Sample rate
-                16,     // Sample size in bits
-                1,      // # of channels (1 = mono, 2 = stereo, etc)
-                true,   // Whether the data is signed or not
-                true    // Whether the data is in big-endian or not
-        )
-
-        DataLine.Info dataLineInfo = new DataLine.Info(TargetDataLine, format)
-        TargetDataLine microphoneConnection = (TargetDataLine) microphone.getLine(dataLineInfo)
-        microphoneConnection.open(format, AUDIO_BUFFER_SIZE)
-        microphoneConnection.start()
-
-        return new JVMAudioInputStream(new AudioInputStream(microphoneConnection))
-    }
-
-    private List<Mixer> getRecordingDevices() {
-        AudioSystem.getMixerInfo()
-                .toList()
-                .findResults { Mixer.Info info ->
-                    Mixer recordingDevice = AudioSystem.getMixer(info)
-                    // TODO: Determine if "PortMixer" really is ignorable or not
-                    if(recordingDevice.class == DirectAudioDevice && recordingDevice.getTargetLineInfo()) {
-                        return recordingDevice
-                    } else {
-                        return null
-                    }
-                }
     }
 
     private void allLightsToRandomColors() {
@@ -113,7 +71,10 @@ class LightJockey implements AudioProcessor {
     }
 
     private void randomLightToRandomColor() {
-        int randomIndex = new Random().nextInt(hueSDK.selectedBridge.resourceCache.allLights.size())
+//        int randomIndex = new Random().nextInt(hueSDK.selectedBridge.resourceCache.allLights.size())
+        // Hack to ensure only the lights in my bedroom change
+        int randomIndex = new Random().nextInt(3)
+        randomIndex = randomIndex == 2 ? 3 : randomIndex
 
         PHLight light = hueSDK.selectedBridge.resourceCache.allLights[randomIndex]
         def newState = new PHLightState(
