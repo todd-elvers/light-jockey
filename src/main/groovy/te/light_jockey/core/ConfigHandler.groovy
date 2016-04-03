@@ -21,26 +21,23 @@ class ConfigHandler {
 
         temporaryDirectory = new File(tempDirPath)
         configurationFile = new File(temporaryDirectory, CONFIG_FILE_NAME)
+
+        // Create the config file if it doesn't exist
+        if(!configurationFile.exists()) {
+            FileUtils.writeStringToFile(configurationFile, "", false)
+        }
     }
 
     void updateConfigFile(Map propsToAdd) {
         Properties configFileProps = readConfigProperties()
         configFileProps.putAll(propsToAdd)
 
-        log.debug("Updating config. file to:\n\t{}", configFileProps.collect{"$it.key: $it.value"}.join("\n\t"))
+        log.debug("Updating config file contents to:\n\t{}", configFileProps.collect{"$it.key: $it.value"}.join("\n\t"))
         configFileProps.store(new FileOutputStream(configurationFile), "LightJockey configuration file")
-    }
-
-    void createConfigFile() {
-        FileUtils.writeStringToFile(configurationFile, "", false)
     }
 
     Properties readConfigProperties() {
         loadPropertiesFromInputStream(FileUtils.openInputStream(configurationFile))
-    }
-
-    boolean configFileExists() {
-        configurationFile.exists() && configurationFile.canRead() && configurationFile.canWrite()
     }
 
     boolean configFileIsStillValid() {

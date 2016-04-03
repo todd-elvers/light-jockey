@@ -6,8 +6,9 @@ import te.light_jockey.core.hue.HueBridgeService
 class Startup {
 
     public static void main(String... args) {
-        def bridgeConnectedCallback = { new LightJockey().start() }
-        def hueBridgeService = new HueBridgeService("LightJockey", bridgeConnectedCallback)
+        def hueBridgeService = HueBridgeService.createWithBridgeConnectionCallback("LightJockey") {
+            new LightJockey().start()
+        }
 
         hueBridgeService.findAndConnectToBridge()
     }

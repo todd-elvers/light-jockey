@@ -2,7 +2,6 @@ package te.light_jockey.core.hue
 
 import com.philips.lighting.hue.sdk.PHAccessPoint
 import com.philips.lighting.hue.sdk.PHHueSDK
-import com.philips.lighting.hue.sdk.PHMessageType
 import com.philips.lighting.hue.sdk.PHSDKListener
 import com.philips.lighting.hue.sdk.heartbeat.PHHeartbeatManager
 import com.philips.lighting.model.PHBridge
@@ -18,8 +17,8 @@ class HueSDKEventListener implements PHSDKListener {
 
     private PHHueSDK hueSDK = PHHueSDK.getInstance()
     private ConfigHandler configHandler = ConfigHandler.getInstance()
-    private boolean authenticationWasRequired = false
-    private int pushlinkButtonTimeoutCounter = 0
+    private HueSDKErrorHandler errorHandler = new HueSDKErrorHandler()
+    private boolean pushlinkAuthWasRequired = false
 
     BridgeConnectedCallback bridgeConnectedCallback
 
@@ -32,15 +31,13 @@ class HueSDKEventListener implements PHSDKListener {
     void onAccessPointsFound(List<PHAccessPoint> accessPoints) {
         def accessPoint = accessPoints.first()
         log.info("Access point found! (IP=$accessPoint.ipAddress)")
-        pushlinkButtonTimeoutCounter = 30
+        errorHandler.resetPushlinkButtonTimer()
         hueSDK.connect(accessPoint)
     }
 
     @Override
     void onCacheUpdated(List<Integer> cacheNotifications, PHBridge bridge) {
-        if (cacheNotifications.contains(PHMessageType.LIGHTS_CACHE_UPDATED)) {
-//            log.info("Lights Cache Updated")
-        }
+        // NO-OP
     }
 
     /**
@@ -53,11 +50,11 @@ class HueSDKEventListener implements PHSDKListener {
     @Override
     void onBridgeConnected(PHBridge bridge, String username) {
         hueSDK.setSelectedBridge(bridge)
-        PHHeartbeatManager.instance.enableLightsHeartbeat(bridge, PHHueSDK.HB_INTERVAL)
+        PHHeartbeatManager.getInstance().enableLightsHeartbeat(bridge, PHHueSDK.HB_INTERVAL)
         log.info("\rBridge Connected!")
         log.debug("Bridge details:\n\tUsername: $username\n\tLights: ${bridge.resourceCache.allLights*.identifier.join(',')}")
-        if(authenticationWasRequired) {
-            authenticationWasRequired = false
+        if(pushlinkAuthWasRequired) {
+            pushlinkAuthWasRequired = false
             configHandler.updateConfigFile([
                     (ConfigHandler.USERNAME_PROP)  : username,
                     (ConfigHandler.IP_ADDRESS_PROP): bridge.resourceCache.bridgeConfiguration.ipAddress
@@ -78,29 +75,27 @@ class HueSDKEventListener implements PHSDKListener {
     void onAuthenticationRequired(PHAccessPoint accessPoint) {
         log.info("Authentication required!  Please press the blue button on the Hue Bridge.")
         hueSDK.startPushlinkAuthentication(accessPoint)
-        authenticationWasRequired = true
+        pushlinkAuthWasRequired = true
     }
 
     @Override
     void onConnectionResumed(PHBridge bridge) {
-//        log.info("Connection to the bridge has resumed.")
+        // NO-OP
     }
 
     @Override
     void onConnectionLost(PHAccessPoint accessPoint) {
         log.info("Connection to bridge lost!")
+        if(HueSDKManager.configFileHasValidCredentials()) {
+            HueSDKManager.connectToBridgeUsingConfigFileCredentials()
+        }
     }
 
-    //TODO: Handle no bridges found (error 1157)
     @Override
-    void onError(int code, final String message) {
-        switch (code) {
-            case PHMessageType.PUSHLINK_BUTTON_NOT_PRESSED:
-                log.info("\r${pushlinkButtonTimeoutCounter--} seconds remaining to press the blue button...")
-                break
-
-            default:
-                log.error("($code) $message")
+    void onError(int code, String message) {
+        errorHandler.handleError(code, message)
+        if(errorHandler.shouldSearchForBridgeAgain(code)) {
+            HueSDKManager.triggerBridgeSearch()
         }
     }
 
@@ -109,6 +104,9 @@ class HueSDKEventListener implements PHSDKListener {
      */
     @Override
     void onParsingErrors(List<PHHueParsingError> parsingErrors) {
-        log.info("Parsing errors!")
+        log.error("Parsing errors:")
+        parsingErrors.each {
+            log.error("\t$it.code - $it.resourceId - $it.message")
+        }
     }
 }

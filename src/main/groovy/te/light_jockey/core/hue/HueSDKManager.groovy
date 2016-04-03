@@ -25,8 +25,11 @@ class HueSDKManager {
      * and adds a shutdown hook to destroy the SDK reference when the JVM is terminated.
      */
     static void initSDKIfNecessary(String appName) {
-        hueSDK.appName = hueSDK.appName ?: appName
-        hueSDK.deviceName = hueSDK.deviceName ?: "${getProperty('user.name')}@${getProperty('os.name')}"
+        PHHueSDK.create().with {
+            setAppName(getAppName() ?: appName)
+            setDeviceName(getDeviceName() ?: "${getProperty('user.name')}@${getProperty('os.name')}")
+        }
+
         addShutdownHook { shutdownSDK() }
     }
 
@@ -43,14 +46,7 @@ class HueSDKManager {
     }
 
     static boolean configFileHasValidCredentials() {
-        configHandler.configFileExists() && configHandler.configFileIsStillValid()
-    }
-
-    /**
-     * Creates the LightJockey config file if it doesn't already exist
-     */
-    static void createConfigFileIfNecessary() {
-        if(!configHandler.configFileExists()) configHandler.createConfigFile()
+        configHandler.configFileIsStillValid()
     }
 
     static void connectToBridgeUsingConfigFileCredentials() {
@@ -68,8 +64,8 @@ class HueSDKManager {
      * <p>The search can take up to 10 seconds to complete.
      * <p>Upon completion of the search, the PHSDKListener.onBridgeConnected() method will be called.
      */
-    static void triggerBridgeSearchOverLAN() {
-        log.info("Searching for Hue bridges on the LAN...")
+    static void triggerBridgeSearch() {
+        log.info("Searching for Hue bridges over LAN...")
         def bridgeSearchManager = hueSDK.getSDKService(PHHueSDK.SEARCH_BRIDGE) as PHBridgeSearchManager
         bridgeSearchManager.search(true, true)  // void search(isUpnpSearch, isPortalSearch)
     }
@@ -80,17 +76,22 @@ class HueSDKManager {
      */
     static void shutdownSDK() {
         // Check if the SDK has been destroyed already or not
-        boolean isNotAlreadyShutdown = hueSDK.@instance as Boolean
+        boolean isNotAlreadyShutdown = PHHueSDK.@instance as Boolean
         if (isNotAlreadyShutdown) {
-            log.info("Shutting down the Hue connection.")
-            shutdown()
+            disconnectFromBridgeAndDestroySDK()
         }
     }
 
-    private static void shutdown() {
-        PHHeartbeatManager.instance.disableAllHeartbeats(hueSDK.selectedBridge)
-        hueSDK.disconnect(hueSDK.selectedBridge)
-        hueSDK.destroySDK()
+    private static void disconnectFromBridgeAndDestroySDK() {
+        log.info("Shutting down the Hue SDK.")
+        hueSDK.with {
+            if(selectedBridge) {
+                PHHeartbeatManager.getInstance().disableAllHeartbeats(selectedBridge)
+                disconnect(selectedBridge)
+            }
+
+            destroySDK()
+        }
     }
 
 }
