@@ -71,10 +71,7 @@ class LightJockey implements AudioProcessor {
     }
 
     private void randomLightToRandomColor() {
-//        int randomIndex = new Random().nextInt(hueSDK.selectedBridge.resourceCache.allLights.size())
-        // Hack to ensure only the lights in my bedroom change
-        int randomIndex = new Random().nextInt(3)
-        randomIndex = randomIndex == 2 ? 3 : randomIndex
+        int randomIndex = new Random().nextInt(hueSDK.selectedBridge.resourceCache.allLights.size())
 
         PHLight light = hueSDK.selectedBridge.resourceCache.allLights[randomIndex]
         def newState = new PHLightState(
