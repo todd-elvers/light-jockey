@@ -11,7 +11,7 @@ import te.light_jockey.core.audio_processing.tarsos_dsp.AudioDispatcherFactory
 import te.light_jockey.core.audio_processing.tarsos_dsp.AudioEvent
 import te.light_jockey.core.audio_processing.tarsos_dsp.AudioProcessor
 
-import static te.light_jockey.misc.PropertiesFileReader.readAppProperty
+import static te.light_jockey.core.io.PropertiesFileReader.readAppProperty
 
 @Slf4j
 class LightJockey implements AudioProcessor {

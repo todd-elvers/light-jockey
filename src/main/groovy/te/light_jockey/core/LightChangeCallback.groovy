@@ -1,4 +1,4 @@
-package te.light_jockey.core.hue.callbacks
+package te.light_jockey.core
 
 import com.philips.lighting.hue.listener.PHLightListener
 import com.philips.lighting.model.PHBridgeResource

@@ -1,9 +1,11 @@
-package te.light_jockey.misc
+package te.light_jockey.core.io
 
+import groovy.transform.CompileStatic
 import org.apache.commons.io.FileUtils
 
+@CompileStatic
 class PropertiesFileReader {
-    static final APP_PROP_FILENAME = "gradle.properties"
+    static final String APP_PROP_FILENAME = "gradle.properties"
 
     static String readAppProperty(String propName) {
         try {
