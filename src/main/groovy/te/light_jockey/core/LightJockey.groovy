@@ -13,6 +13,7 @@ import te.light_jockey.core.audio_processing.tarsos_dsp.AudioProcessor
 
 import static te.light_jockey.core.io.PropertiesFileReader.readAppProperty
 
+//TODO: Need to check the state of the lights at startup and turn on the lights that are off
 @Slf4j
 class LightJockey implements AudioProcessor {
     private static final int SAMPLE_RATE = 44100
