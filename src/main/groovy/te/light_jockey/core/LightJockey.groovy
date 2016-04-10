@@ -6,8 +6,6 @@ import com.philips.lighting.model.PHLight
 import com.philips.lighting.model.PHLightState
 import groovy.util.logging.Slf4j
 import te.light_jockey.core.audio_processing.SoundPressureLevelDetector
-import te.light_jockey.core.audio_processing.tarsos_dsp.AudioDispatcher
-import te.light_jockey.core.audio_processing.tarsos_dsp.AudioDispatcherFactory
 import te.light_jockey.core.audio_processing.tarsos_dsp.AudioEvent
 import te.light_jockey.core.audio_processing.tarsos_dsp.AudioProcessor
 
@@ -28,13 +26,26 @@ class LightJockey implements AudioProcessor {
     void start() {
         log.info("Welcome to LightJockey v${readAppProperty('version')}!\n")
 
-        // Create an audio dispatcher to dispatch data from the microphone to audio processor(s)
-        AudioDispatcher dispatcher = AudioDispatcherFactory.fromDefaultMicrophone(SAMPLE_RATE, AUDIO_BUFFER_SIZE, BUFFER_OVERLAP)
-        dispatcher.addAudioProcessor(splDetector)   // Add our sound pressure level detector to translate the raw microphone data to dB SPL
-        dispatcher.addAudioProcessor(this)          // Add our LightJockey processor so we can read the dB SPL value from the SPL detector and change the lights accordingly
+        List<PHLight> lightsThatAreOff = []
 
+        hueSDK.selectedBridge.resourceCache.allLights.each { PHLight light ->
+            if(!light.getLastKnownLightState().isOn()){
+                lightsThatAreOff << light
+            }
+        }
+
+        log.info("The lights that are off:")
+        lightsThatAreOff.each {
+            log.info(it.name)
+        }
+
+        // Create an audio dispatcher to dispatch data from the microphone to audio processor(s)
+//        AudioDispatcher dispatcher = AudioDispatcherFactory.fromDefaultMicrophone(SAMPLE_RATE, AUDIO_BUFFER_SIZE, BUFFER_OVERLAP)
+//        dispatcher.addAudioProcessor(splDetector)   // Add our sound pressure level detector to translate the raw microphone data to dB SPL
+//        dispatcher.addAudioProcessor(this)          // Add our LightJockey processor so we can read the dB SPL value from the SPL detector and change the lights accordingly
+//
         // Offload the dispatcher to a different thread & start it up
-        new Thread(dispatcher, "LightJockey - Audio Dispatching").start()
+//        new Thread(dispatcher, "LightJockey - Audio Dispatching").start()
     }
 
     @Override

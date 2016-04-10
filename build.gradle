@@ -21,7 +21,7 @@ dependencies {
     compile 'org.codehaus.groovy:groovy-all:2.4.4'
 
     // Hue SDK and such
-    compile 'com.github.todd-elvers:simple-hue-bridge-service:1.0.1'
+    compile 'com.github.todd-elvers:simple-hue-bridge-service:1.0.2'
 
     // Logging
     compile 'org.slf4j:slf4j-api:1.7.12'
