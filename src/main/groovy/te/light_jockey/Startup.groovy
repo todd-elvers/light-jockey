@@ -1,6 +1,7 @@
 package te.light_jockey
 
 import groovy.transform.CompileStatic
+import te.light_jockey.core.KeyboardLightJockey
 import te.light_jockey.core.LightJockey
 import te.philips_hue.HueBridgeService
 
@@ -9,7 +10,8 @@ class Startup {
 
     static void main(String... args) {
         def hueBridgeService = HueBridgeService.createWithBridgeConnectionCallback("LightJockey") {
-            new LightJockey().start()
+//            new LightJockey().start()
+            new KeyboardLightJockey()
         }
 
         hueBridgeService.findAndConnectToBridge()

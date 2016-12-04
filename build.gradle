@@ -20,6 +20,9 @@ repositories {
 dependencies {
     compile 'org.codehaus.groovy:groovy-all:2.4.4'
 
+    // Native input hook framework (mouse, keyboard, etc)
+    compile 'com.1stleg:jnativehook:2.0.2'
+
     // Hue SDK and such
     compile 'com.github.todd-elvers:simple-hue-bridge-service:1.0.2'
 
